@@ -1,0 +1,85 @@
+:root
+{
+  --BigTextColor: rgb(255,0,0);
+}
+
+canvas
+{
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+main 
+{
+  position: absolute;
+  width: 100vw;
+  color:white;
+  z-index: 99;
+  width: 100%;
+  margin: 0px auto;
+  padding: 120px 0px;
+
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+}
+
+h1, h2, h3, blockquote
+{
+  font-family: elevon, sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  color: var(--BigTextColor);
+}
+
+header
+{
+  background: var(--dark-Background);
+  grid-column: 2/ span 5; /*Starts at collumn 2 spans 5 collumns */
+  font-size: 2.5rem;
+  padding: 2rem;
+  margin-bottom: var(--spacing);
+}
+
+section
+{
+  grid-column: 2 / 8; /*Starts at collumn 2 ends at 8 */
+  padding: 1rem;
+  background: var(--dark-Background);
+  font-size: 1.25rem;
+  line-height: 1.5;
+  margin-bottom: var(--spacing);
+}
+
+blockquote
+{
+  margin: 0;
+  padding: 0;
+  grid-column: 2 / span 9;
+  margin-bottom: var(--spacing);
+}
+
+footer
+{
+  grid-column: 1 / span 12;
+
+}
+
+#moonpic
+{
+  width: 100%; 
+  aspect-ratio: 16/9;
+}
+
+
+.dropdown
+{
+  opacity: 0;
+  visibility: hidden;
+}
+
+button:focus-within .dropdown
+{
+  opacity: 1;
+  visibility: visible;
+}

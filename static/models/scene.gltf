@@ -1,0 +1,655 @@
+{
+  "accessors": [
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 1252,
+      "max": [
+        99.98548889160156,
+        99.98548126220703,
+        8.561319351196289
+      ],
+      "min": [
+        -100.0,
+        -100.0,
+        -8.561249732971191
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 15024,
+      "componentType": 5126,
+      "count": 1252,
+      "max": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 1252,
+      "max": [
+        0.8933129906654358,
+        1.0
+      ],
+      "min": [
+        0.0,
+        0.0
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 2145,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 30048,
+      "componentType": 5126,
+      "count": 1252,
+      "max": [
+        99.98548889160156,
+        99.98548126220703,
+        8.561319351196289
+      ],
+      "min": [
+        -100.0,
+        -100.0,
+        -8.561249732971191
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 45072,
+      "componentType": 5126,
+      "count": 1252,
+      "max": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 10016,
+      "componentType": 5126,
+      "count": 1252,
+      "max": [
+        0.8933129906654358,
+        1.0
+      ],
+      "min": [
+        0.0,
+        0.0
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 8580,
+      "componentType": 5125,
+      "count": 2145,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 60096,
+      "componentType": 5126,
+      "count": 1252,
+      "max": [
+        99.98548889160156,
+        99.98548126220703,
+        8.561319351196289
+      ],
+      "min": [
+        -100.0,
+        -100.0,
+        -8.561249732971191
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 75120,
+      "componentType": 5126,
+      "count": 1252,
+      "max": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 20032,
+      "componentType": 5126,
+      "count": 1252,
+      "max": [
+        0.8933129906654358,
+        1.0
+      ],
+      "min": [
+        0.0,
+        0.0
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 17160,
+      "componentType": 5125,
+      "count": 2145,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 90144,
+      "componentType": 5126,
+      "count": 1252,
+      "max": [
+        99.98548889160156,
+        99.98548126220703,
+        8.561319351196289
+      ],
+      "min": [
+        -100.0,
+        -100.0,
+        -8.561249732971191
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 105168,
+      "componentType": 5126,
+      "count": 1252,
+      "max": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 30048,
+      "componentType": 5126,
+      "count": 1252,
+      "max": [
+        0.8933129906654358,
+        1.0
+      ],
+      "min": [
+        0.0,
+        0.0
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 25740,
+      "componentType": 5125,
+      "count": 2145,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 120192,
+      "componentType": 5126,
+      "count": 1252,
+      "max": [
+        99.98548889160156,
+        99.98548126220703,
+        8.561319351196289
+      ],
+      "min": [
+        -100.0,
+        -100.0,
+        -8.561249732971191
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 135216,
+      "componentType": 5126,
+      "count": 1252,
+      "max": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 40064,
+      "componentType": 5126,
+      "count": 1252,
+      "max": [
+        0.8933129906654358,
+        1.0
+      ],
+      "min": [
+        0.0,
+        0.0
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 34320,
+      "componentType": 5125,
+      "count": 2145,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "Gohar.Munir (https://sketchfab.com/Gohar.Munir)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/low-poly-jigsaw-puzzle-pieces-16dc224022e141409982c82c5e88f8d4",
+      "title": "Low Poly Jigsaw Puzzle Pieces"
+    },
+    "generator": "Sketchfab-12.67.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 42900,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 50080,
+      "byteOffset": 42900,
+      "byteStride": 8,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 150240,
+      "byteOffset": 92980,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 243220,
+      "uri": "scene.bin"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "name": "Puzzle_Piece_1__0",
+      "pbrMetallicRoughness": {
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.6
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "008802",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.0,
+          0.246201,
+          0.000607064,
+          1.0
+        ],
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.9502409757
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "D31E29",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.651406,
+          0.0129829,
+          0.0221739,
+          1.0
+        ],
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.957798774
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "1E5AD8",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.012983,
+          0.102242,
+          0.686685,
+          1.0
+        ],
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.9645546094
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "FFC107",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          1.0,
+          0.533277,
+          0.00212472,
+          1.0
+        ],
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.8671433245
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Puzzle Piece 1__0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Puzzle Piece 2_008802_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 5,
+            "POSITION": 4,
+            "TEXCOORD_0": 6
+          },
+          "indices": 7,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Puzzle Piece 3_D31E29_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 9,
+            "POSITION": 8,
+            "TEXCOORD_0": 10
+          },
+          "indices": 11,
+          "material": 2,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Puzzle Piece 4_1E5AD8_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 13,
+            "POSITION": 12,
+            "TEXCOORD_0": 14
+          },
+          "indices": 15,
+          "material": 3,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Puzzle Piece 5_FFC107_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 17,
+            "POSITION": 16,
+            "TEXCOORD_0": 18
+          },
+          "indices": 19,
+          "material": 4,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        2.220446049250313e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Sketchfab_model"
+    },
+    {
+      "children": [
+        2
+      ],
+      "matrix": [
+        0.009999999776482582,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.009999999776482582,
+        0.0,
+        0.0,
+        -0.009999999776482582,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "ebc3901e260e4c2290dbc54c22efa899.fbx"
+    },
+    {
+      "children": [
+        3,
+        5,
+        7,
+        9,
+        11
+      ],
+      "name": "RootNode"
+    },
+    {
+      "children": [
+        4
+      ],
+      "name": "Puzzle Piece 1"
+    },
+    {
+      "mesh": 0,
+      "name": "Puzzle Piece 1__0"
+    },
+    {
+      "children": [
+        6
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -150.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Puzzle Piece 2"
+    },
+    {
+      "mesh": 1,
+      "name": "Puzzle Piece 2_008802_0"
+    },
+    {
+      "children": [
+        8
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        150.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Puzzle Piece 3"
+    },
+    {
+      "mesh": 2,
+      "name": "Puzzle Piece 3_D31E29_0"
+    },
+    {
+      "children": [
+        10
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        150.0,
+        0.0,
+        1.0
+      ],
+      "name": "Puzzle Piece 4"
+    },
+    {
+      "mesh": 3,
+      "name": "Puzzle Piece 4_1E5AD8_0"
+    },
+    {
+      "children": [
+        12
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        -150.0,
+        0.0,
+        1.0
+      ],
+      "name": "Puzzle Piece 5"
+    },
+    {
+      "mesh": 4,
+      "name": "Puzzle Piece 5_FFC107_0"
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}
