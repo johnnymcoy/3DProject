@@ -25,45 +25,36 @@ dracoLoader.setDecoderPath("/draco/");
 const gltfLoader = new GLTFLoader();
 gltfLoader.setDRACOLoader(dracoLoader);
 let mixer = null
-let PuzzlePiece_01 = new THREE.Mesh();
-let PuzzlePiece_02 = new THREE.Mesh();;
-let PuzzlePiece_03 = new THREE.Mesh();;
-let PuzzlePiece_04 = new THREE.Mesh();;
-let PuzzlePiece_05 = new THREE.Mesh();;
-let PuzzlePiece_06 = new THREE.Mesh();;
-let PuzzlePiece_07 = new THREE.Mesh();;
+let PuzzlePiece_01 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshBasicMaterial({ color: '#ff0000' }));
+let PuzzlePiece_02 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshBasicMaterial({ color: '#fff17f' }));
+let PuzzlePiece_03 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshBasicMaterial({ color: '#0f0090' }));
+let PuzzlePiece_04 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshBasicMaterial({ color: '#ffff00' }));
+let PuzzlePiece_05 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshBasicMaterial({ color: '#ff00ff' }));
+let PuzzlePiece_06 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshBasicMaterial({ color: '#bb1122' }));
+let PuzzlePiece_07 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshBasicMaterial({ color: '#01f000' }));
 
-let PuzzlePieces = [];
+let PuzzlePieces = [PuzzlePiece_01, PuzzlePiece_02, PuzzlePiece_03, PuzzlePiece_04, PuzzlePiece_05, PuzzlePiece_06, PuzzlePiece_07];
 
 gltfLoader.load(
     "/static/models/scene.gltf",
     (gltf) =>{
-        let Pieces = gltf.scene.children[0].children[0].children[0].children;
+        // let Pieces = gltf.scene.children[0].children[0].children[0].children;
         gltf.scene.traverse((node) => {
-            // console.log(node);
-                  // Option 2: Use the geometry of the mesh to create a new mesh
-            const newMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-            const newMesh = new THREE.Mesh(node.geometry, newMaterial);
-            PuzzlePieces.push(newMesh);
-            // scene.add(newMesh);
+            // const newMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+            // const newMesh = new THREE.Mesh(node.geometry, newMaterial);
+            // PuzzlePieces[sceneIndex].geometry = node.geometry;
+            for(const PuzzlePiece of PuzzlePieces)
+            {
+                PuzzlePiece.geometry = node.geometry;
+            }
         })
-        // const newMesh = new THREE.Mesh(Pieces.geometry, newMaterial);
-
-        // PuzzlePiece_01 = Pieces[0];
-        // PuzzlePiece_02 = Pieces[1];
-        // PuzzlePiece_03 = Pieces[2];
-        // PuzzlePiece_04 = Pieces[3];
-        // PuzzlePiece_05 = Pieces[4];
-        // //@TODO doesn't create new ones, they are Refs
-        // PuzzlePiece_06 = Pieces[4];
-        // PuzzlePiece_07 = Pieces[4];
-        // PuzzlePieces = [PuzzlePiece_01, PuzzlePiece_02, PuzzlePiece_03, PuzzlePiece_04, PuzzlePiece_05, PuzzlePiece_06, PuzzlePiece_07];
-        // PuzzlePiece_01.position.set(0,0,0);
-        // PuzzlePiece_02.position.set(0,3.75,0);
-        // PuzzlePiece_03.position.set(3.75,0,0);
-        // PuzzlePiece_04.position.set(0,-3.75,0);
-        // PuzzlePiece_05.position.set(-3.75,0,0);
-        // // PuzzlePiece_06.position.set(-4.75,0,0)
+        PuzzlePiece_01.position.set(0,0,0);
+        PuzzlePiece_02.position.set(0,3.75,0);
+        PuzzlePiece_03.position.set(3.75,0,0);
+        PuzzlePiece_04.position.set(0,-3.75,0);
+        PuzzlePiece_05.position.set(-3.75,0,0);
+        PuzzlePiece_06.position.set(-3.75,3.75,0);
+        PuzzlePiece_07.position.set(-3.75,-3.75,0);
         let index = 0;
         for(const PuzzlePiece of PuzzlePieces)
         {
@@ -195,7 +186,7 @@ const raycaster = new THREE.Raycaster();
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.set(2, 2, 2)
+camera.position.set(0, 2, 10)
 scene.add(camera)
 
 // Controls
@@ -222,7 +213,7 @@ let previousTime = 0
 
 const rayOrigin = new THREE.Vector3(-3,0,0);
 const rayDirection = new THREE.Vector3(10,0,0);
-const objectsToTest = [PuzzlePiece_01];
+const objectsToTest = PuzzlePieces;
 let currentIntersect = null;
 
 
@@ -238,8 +229,6 @@ const tick = () =>
         mixer.update(deltaTime);
     }
 
-    // Update controls
-    controls.update()
     raycaster.setFromCamera(mouse, camera)
 
     if(PuzzlePiece_01 != null && raycaster != null && objectsToTest)
@@ -247,25 +236,29 @@ const tick = () =>
         // PuzzlePiece_01.position.y = Math.sin(elapsedTime * 0.3) * 1.5;
         if(objectsToTest != null)
         {
-            // raycaster.intersectObjects(objectsToTest);
-            // const intersects = raycaster.intersectObjects(objectsToTest);
+            raycaster.intersectObjects(objectsToTest);
+            const intersects = raycaster.intersectObjects(objectsToTest);
             for(const object of objectsToTest)
             {
                 if(object != null)
                 {
+                    object.position.z = 0;
                     // object.material.color.set("red");
                 }
             }
-            // for(const intersect of intersects)
-            // {
-            //     if(intersect != null && intersect.object != null)
-            //     {
-            //         // intersect.object.material.color.set("blue");
-            //     }
-            // }
+            for(const intersect of intersects)
+            {
+                if(intersect != null && intersect.object != null)
+                {
+                    intersect.object.position.z = 1;
+                    // intersect.object.material.color.set("blue");
+                }
+            }
         }
     }
-    
+    // Update controls
+    controls.update()
+
     // Render
     renderer.render(scene, camera)
 
