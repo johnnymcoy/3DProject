@@ -5,6 +5,7 @@ import * as dat from 'lil-gui'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader.js";
 import {DRACOLoader} from "three/examples/jsm/loaders/DRACOLoader.js";
+// import gsap from "gsap";
 
 /**
  * Debug
@@ -133,56 +134,132 @@ let PuzzlePiece_03 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new T
 let PuzzlePiece_04 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshBasicMaterial({ color: '#ffff00' }));
 let PuzzlePiece_05 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshBasicMaterial({ color: '#ff00ff' }));
 let PuzzlePiece_06 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshBasicMaterial({ color: '#bb1122' }));
-let PuzzlePiece_07 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshBasicMaterial({ color: '#01f000' }));
+// let PuzzlePiece_07 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshBasicMaterial({ color: '#01f000' }));
 
 // PuzzlePiece_01.material = StandardMaterialEnvi;
 
-let PuzzlePieces = [PuzzlePiece_01, PuzzlePiece_02, PuzzlePiece_03, PuzzlePiece_04, PuzzlePiece_05, PuzzlePiece_06, PuzzlePiece_07];
+let PuzzlePieces = [PuzzlePiece_01, PuzzlePiece_02, PuzzlePiece_03, PuzzlePiece_04, PuzzlePiece_05, PuzzlePiece_06];
 
+// gltfLoader.load(
+//     "/static/models/scene.gltf",
+//     (gltf) =>{
+//         // let Pieces = gltf.scene.children[0].children[0].children[0].children;
+//         gltf.scene.traverse((node) => {
+//             // const newMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+//             // const newMesh = new THREE.Mesh(node.geometry, newMaterial);
+//             // PuzzlePieces[sceneIndex].geometry = node.geometry;
+//             for(const PuzzlePiece of PuzzlePieces)
+//             {
+//                 PuzzlePiece.geometry = node.geometry;
+//                 PuzzlePiece.receiveShadow = true;
+//                 PuzzlePiece.material = new THREE.MeshStandardMaterial({
+//                     color: new THREE.Color(Math.random(), Math.random(), Math.random()),
+//                     metalness: 0.3,
+//                     roughness: 0.4,
+//                     envMap: environmentMapTexture,
+//                     envMapIntensity: 0.5
+//                 });
+//             }
+//         })
+//         PuzzlePiece_01.position.set(0,0,0);
+//         PuzzlePiece_02.position.set(0,3.75,0);
+//         PuzzlePiece_03.position.set(3.75,0,0);
+//         PuzzlePiece_04.position.set(0,-3.75,0);
+//         PuzzlePiece_05.position.set(-3.75,0,0);
+//         PuzzlePiece_06.position.set(-3.75,3.75,0);
+//         PuzzlePiece_07.position.set(-3.75,-3.75,0);
+//         let index = 0;
+//         for(const PuzzlePiece of PuzzlePieces)
+//         {
+//             index++;
+//             PuzzlePiece.scale.set(0.025, 0.025, 0.025);
+//             PuzzlePiece.castShadow = true;
+//             // scene.add(PuzzlePiece);
+//         }
+//         // PuzzlePiece_01.scale.set(0.025, 0.025, 0.025);
+//         // PuzzlePiece_01.position.set(0,4,0);
+//         // const material = new THREE.MeshPhongMaterial({color: 0xffffff} );
+//         // const PuzzlePieceMesh = new THREE.Mesh(new THREE.PlaneGeometry(10, 10),material);
+//         // console.log(PuzzlePiece_01, PuzzlePieceMesh);
+//         // PuzzlePiece_01.castShadow = true;
+//         // PuzzlePiece_01.addEventListener();
+//         // scene.add(PuzzlePieces);
+//     },
+//     () =>{
+//         console.log("Progress")
+//     },
+//     () =>{
+//         console.log("Error")
+//     }
+// );
+
+
+const Scale = 30;
+const RotationX = Math.PI * 0.5;
+const PositionMove = 3.0;
 gltfLoader.load(
-    "/static/models/scene.gltf",
+    "/static/models/Jigsaws_02.gltf",
     (gltf) =>{
         // let Pieces = gltf.scene.children[0].children[0].children[0].children;
+        let nodeIndex = 0;
         gltf.scene.traverse((node) => {
+            if(node.type == "Mesh")
+            {
+                console.log(node)
+                PuzzlePieces[nodeIndex -1].geometry = node.geometry;
+                PuzzlePieces[nodeIndex -1].rotation.set(RotationX,0,0);
+
+            }
+            // PuzzlePieces[nodeIndex].geometry = node.geometry;
+            // for(const PuzzlePiece of PuzzlePieces)
+            //     {
+            //         PuzzlePiece.geometry = node.geometry;
+            //         PuzzlePiece.receiveShadow = true;
+            //         PuzzlePiece.material = new THREE.MeshStandardMaterial({
+            //             color: new THREE.Color(Math.random(), Math.random(), Math.random()),
+            //             metalness: 0.3,
+            //             roughness: 0.4,
+            //             envMap: environmentMapTexture,
+            //             envMapIntensity: 0.5
+            //         });
+            //     }
+                // PuzzlePiece_01.position.set(-PositionMove,PositionMove,0);
+                // PuzzlePiece_02.position.set(0,0,0);
+                // PuzzlePiece_03.position.set(0,PositionMove,0);
+                // PuzzlePiece_04.position.set(-PositionMove, 2 * PositionMove,0);
+                // PuzzlePiece_05.position.set(-PositionMove,0,0);
+                // PuzzlePiece_06.position.set(0, 2 * PositionMove, 0);
+                // PuzzlePiece_07.position.set(-3.75,-3.75,0);
+                let index = 0;
+                for(const PuzzlePiece of PuzzlePieces)
+                {
+                    index++;
+                    PuzzlePiece.scale.set(Scale, Scale, Scale);
+                    PuzzlePiece.castShadow = true;
+                    scene.add(PuzzlePiece);
+                }
+                nodeIndex++
             // const newMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
             // const newMesh = new THREE.Mesh(node.geometry, newMaterial);
+            // PuzzlePiece_10.geometry = node.geometry;
+            // PuzzlePiece_10.scale.set(10,10,10)
+            // scene.add(PuzzlePiece_10);
+
+
             // PuzzlePieces[sceneIndex].geometry = node.geometry;
-            for(const PuzzlePiece of PuzzlePieces)
-            {
-                PuzzlePiece.geometry = node.geometry;
-                PuzzlePiece.receiveShadow = true;
-                PuzzlePiece.material = new THREE.MeshStandardMaterial({
-                    color: new THREE.Color(Math.random(), Math.random(), Math.random()),
-                    metalness: 0.3,
-                    roughness: 0.4,
-                    envMap: environmentMapTexture,
-                    envMapIntensity: 0.5
-                });
-            }
+            // for(const PuzzlePiece of PuzzlePieces)
+            // {
+            //     PuzzlePiece.geometry = node.geometry;
+            //     PuzzlePiece.receiveShadow = true;
+            //     PuzzlePiece.material = new THREE.MeshStandardMaterial({
+            //         color: new THREE.Color(Math.random(), Math.random(), Math.random()),
+            //         metalness: 0.3,
+            //         roughness: 0.4,
+            //         envMap: environmentMapTexture,
+            //         envMapIntensity: 0.5
+            //     });
+            // }
         })
-        PuzzlePiece_01.position.set(0,0,0);
-        PuzzlePiece_02.position.set(0,3.75,0);
-        PuzzlePiece_03.position.set(3.75,0,0);
-        PuzzlePiece_04.position.set(0,-3.75,0);
-        PuzzlePiece_05.position.set(-3.75,0,0);
-        PuzzlePiece_06.position.set(-3.75,3.75,0);
-        PuzzlePiece_07.position.set(-3.75,-3.75,0);
-        let index = 0;
-        for(const PuzzlePiece of PuzzlePieces)
-        {
-            index++;
-            PuzzlePiece.scale.set(0.025, 0.025, 0.025);
-            PuzzlePiece.castShadow = true;
-            scene.add(PuzzlePiece);
-        }
-        // PuzzlePiece_01.scale.set(0.025, 0.025, 0.025);
-        // PuzzlePiece_01.position.set(0,4,0);
-        // const material = new THREE.MeshPhongMaterial({color: 0xffffff} );
-        // const PuzzlePieceMesh = new THREE.Mesh(new THREE.PlaneGeometry(10, 10),material);
-        // console.log(PuzzlePiece_01, PuzzlePieceMesh);
-        // PuzzlePiece_01.castShadow = true;
-        // PuzzlePiece_01.addEventListener();
-        // scene.add(PuzzlePieces);
     },
     () =>{
         console.log("Progress")
@@ -191,6 +268,7 @@ gltfLoader.load(
         console.log("Error")
     }
 );
+
 
 /**
  * Floor
@@ -467,10 +545,10 @@ guiCameraFolder.add(CameraParams, "bAnimate");
 /**
  * Controls
  */
-// const controls = new OrbitControls(camera, canvas)
-// controls.target.set(0, 0.75, 0)
-// controls.enableDamping = true;
-// guiCameraFolder.add(controls, "enabled");
+const controls = new OrbitControls(camera, canvas)
+controls.target.set(0, 0.75, 0)
+controls.enableDamping = true;
+guiCameraFolder.add(controls, "enabled");
 
 /**
  * Mouse
@@ -487,24 +565,35 @@ let bSelectedItem = false;
 
 window.addEventListener("click", (event)=>
     {
-        if(currentIntersect)
-        {
-            console.log(objectsToTest.findIndex((item) => item === currentIntersect.object))
-            bSelectedItem = !bSelectedItem;
-            if(bSelectedItem)
+        gsap.to(
+            currentIntersect.object.position,
             {
-                camera.position.set(currentIntersect.object.position.x, currentIntersect.object.position.y, 5);
+                duration: 1.5,
+                ease: "power2.inOut",
+                x: "+=6",
+                y: "+=3",
+                z: "+=1.5"
             }
-            else
-            {
-                camera.position.copy(CameraParams.startLocation)
-            }
-        }
-        else
-        {
-            bSelectedItem = false;
-            camera.position.copy(CameraParams.startLocation)
-        }
+        )
+
+        // if(currentIntersect)
+        // {
+        //     console.log(objectsToTest.findIndex((item) => item === currentIntersect.object))
+        //     bSelectedItem = !bSelectedItem;
+        //     if(bSelectedItem)
+        //     {
+        //         camera.position.set(currentIntersect.object.position.x, currentIntersect.object.position.y, 5);
+        //     }
+        //     else
+        //     {
+        //         camera.position.copy(CameraParams.startLocation)
+        //     }
+        // }
+        // else
+        // {
+        //     bSelectedItem = false;
+        //     camera.position.copy(CameraParams.startLocation)
+        // }
     }
 )
 
@@ -614,13 +703,13 @@ const tick = () =>
         camera.position.y = Math.sin(elapsedTime * 0.05) * 1.5;
         camera.position.x = Math.sin(elapsedTime * 0.1) * 1.5;
     }
-    if(bSelectedItem == false)
-    {
-        const paralaxX = mouse.x;
-        const paralaxY = mouse.y; // Ease the movement 
-        cameraGroup.position.x += (paralaxX - cameraGroup.position.x) * 5 * deltaTime;
-        cameraGroup.position.y += (paralaxY - cameraGroup.position.y) * 5 * deltaTime;
-    }
+    // if(bSelectedItem == false)
+    // {
+    //     const paralaxX = mouse.x;
+    //     const paralaxY = mouse.y; // Ease the movement 
+    //     cameraGroup.position.x += (paralaxX - cameraGroup.position.x) * 5 * deltaTime;
+    //     cameraGroup.position.y += (paralaxY - cameraGroup.position.y) * 5 * deltaTime;
+    // }
 
     camera.updateProjectionMatrix()
 
@@ -633,7 +722,7 @@ const tick = () =>
     spotLightCameraHelper.update();
 
     // Update controls
-    // controls.update()
+    controls.update()
 
     // Render
     renderer.render(scene, camera)
