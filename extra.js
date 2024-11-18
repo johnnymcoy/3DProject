@@ -105,6 +105,95 @@ tick{
 
 }
 
+import { OutlineEffect } from 'three/addons/effects/OutlineEffect.js';
+
+//  effects
+
+let effect;
+effect = new OutlineEffect( renderer,  { defaultThickness: 0.005, defaultColor: [ 0, 0, 0 ], defaultAlpha: 0, defaultKeepAlive: true // keeps outline material in cache even if material is removed from scene 
+    } );
+
+//tick
+    effect.render( scene, camera );
+
+
+
+// FPS STATS
+
+
+import Stats from 'three/addons/libs/stats.module.js';
+let stats;
+
+stats = new Stats();
+canvas.appendChild( stats.dom );
+
+tick: 
+stats.update();
+or:
+stats.begin();
+stats.end();
+
+
+
+
+ const cubeWidth = 400;
+const numberOfSphersPerSide = 5;
+const sphereRadius = ( cubeWidth / numberOfSphersPerSide ) * 0.8 * 0.5;
+const stepSize = 1.0 / numberOfSphersPerSide;
+
+const geometry = new THREE.SphereGeometry( sphereRadius, 32, 16 );
+
+for ( let alpha = 0, alphaIndex = 0; alpha <= 1.0; alpha += stepSize, alphaIndex ++ ) {
+
+    const colors = new Uint8Array( alphaIndex + 2 );
+
+    for ( let c = 0; c <= colors.length; c ++ ) {
+
+        colors[ c ] = ( c / colors.length ) * 256;
+
+    }
+
+    const gradientMap = new THREE.DataTexture( colors, colors.length, 1, THREE.RedFormat );
+    gradientMap.needsUpdate = true;
+
+    for ( let beta = 0; beta <= 1.0; beta += stepSize ) {
+
+        for ( let gamma = 0; gamma <= 1.0; gamma += stepSize ) {
+
+            // basic monochromatic energy preservation
+            const diffuseColor = new THREE.Color().setHSL( alpha, 0.5, gamma * 0.5 + 0.1 ).multiplyScalar( 1 - beta * 0.2 );
+
+            const material = new THREE.MeshToonMaterial( {
+                color: diffuseColor,
+                gradientMap: gradientMap
+            } );
+
+            const mesh = new THREE.Mesh( geometry, material );
+
+            mesh.position.x = alpha * 400 - 200;
+            mesh.position.y = beta * 400 - 200;
+            mesh.position.z = gamma * 400 - 200;
+
+            scene.add( mesh );
+
+        }
+
+    }
+
+}
+
+
+const groundGeo = new THREE.PlaneGeometry( 10000, 10000 );
+const groundMat = new THREE.MeshLambertMaterial( { color: 0xffffff } );
+groundMat.color.setHSL( 0.095, 1, 0.75 );
+
+const ground = new THREE.Mesh( groundGeo, groundMat );
+ground.position.y = - 33;
+ground.rotation.x = - Math.PI / 2;
+ground.receiveShadow = true;
+scene.add( ground );
+
+
 ///// Materials         //
 
 // const StandardMaterial = new THREE.MeshStandardMaterial();
@@ -292,3 +381,25 @@ tick{
 // //Points
 // const particles = new THREE.Points(particlesGeometry, particleMaterial);
 // scene.add(particles);
+
+
+
+const orthographicCamera = new THREE.OrthographicCamera(-1,1,1,-1,1,100);
+orthographicCamera.position.z = 8;
+orthographicCamera.position.y = 1;
+orthographicCamera.position.x = 0;
+
+
+//
+// Raycaster
+// 
+
+const raycaster = new THREE.Raycaster();
+// const rayOrigin = new THREE.Vector3(-3,0,0);
+// const rayDirection = new THREE.Vector3(10,0,0);
+// rayDirection.normalize();
+// raycaster.set(rayOrigin,rayDirection);
+// const intersect = raycaster.intersectObject(object2);
+// console.log(intersect);
+// const intersects = raycaster.intersectObjects([object1,object2,object3]);
+// console.log(intersects);
