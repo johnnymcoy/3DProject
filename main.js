@@ -252,10 +252,17 @@ let PuzzlePiece_06 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new T
 
 let PuzzlePieces = [PuzzlePiece_01, PuzzlePiece_02, PuzzlePiece_03, PuzzlePiece_04, PuzzlePiece_05, PuzzlePiece_06];
 
-const Scale = 30;
+const PositionMoveRight = 3.396413;
+const PositionMoveUp = 0.337502 * 6;
+
+const PositionTotalDown = -1.75;
+const PositionTotalLeft = 1.75;
+
+
+const PuzzleScale = 30;
 const RotationX = Math.PI * 0.5;
 gltfLoader.load(
-    "/static/models/Jigsaws_04.gltf",
+    "/static/models/Jigsaws_06.gltf",
     (gltf) =>{
         let nodeIndex = 0;
         gltf.scene.traverse((node) => {
@@ -287,24 +294,24 @@ gltfLoader.load(
             //             envMapIntensity: 0.5
             //         });
             //     }
-                // PuzzlePiece_01.position.set(-PositionMove,PositionMove,0);
-                // PuzzlePiece_02.position.set(10,0,0);
-                // PuzzlePiece_03.position.set(0,PositionMove,0);
-                // PuzzlePiece_04.position.set(-PositionMove, 2 * PositionMove,0);
-                // PuzzlePiece_05.position.set(-PositionMove,0,0);
-                // PuzzlePiece_06.position.set(0, 2 * PositionMove, 0);
-                // PuzzlePiece_07.position.set(-3.75,-3.75,0);
-                nodeIndex++
+            nodeIndex++
         })
+        PuzzlePiece_01.position.set(-PositionMoveRight + PositionTotalLeft,PositionMoveUp + PositionTotalDown,0);
+        PuzzlePiece_02.position.set(PositionTotalLeft,PositionTotalDown,0);
+        PuzzlePiece_03.position.set(PositionTotalLeft,PositionMoveUp + PositionTotalDown,0);
+        PuzzlePiece_04.position.set(-PositionMoveRight + PositionTotalLeft, 2 * PositionMoveUp + PositionTotalDown,0);
+        PuzzlePiece_05.position.set(-PositionMoveRight + PositionTotalLeft,PositionTotalDown,0);
+        PuzzlePiece_06.position.set(PositionTotalLeft, 2 * PositionMoveUp + PositionTotalDown, 0);
+
         let index = 0;
         for(const PuzzlePiece of PuzzlePieces)
         {
             index++;
-            PuzzlePiece.scale.set(Scale, Scale, Scale);
+            PuzzlePiece.scale.set(PuzzleScale, PuzzleScale, PuzzleScale);
             PuzzlePiece.castShadow = true;
             scene.add(PuzzlePiece);
-
         }
+
         updateAllMaterials() 
 
     },
@@ -457,12 +464,12 @@ scene.add(cameraGroup)
 
 let CameraParams = {
     bAnimate: false,
-    startLocation: new THREE.Vector3(0, 0, 10),
+    startLocation: new THREE.Vector3(0, 0, 20),
   };
 
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 camera.position.copy(CameraParams.startLocation)
-
+camera.fov = 45
 
 scene.add(camera)
 
@@ -528,8 +535,8 @@ window.addEventListener("click", (event)=>
         //     {
         //         duration: 1.5,
         //         ease: "power2.inOut",
-        //         x: "+=6",
-        //         y: "+=3",
+        //         // x: "+=6",
+        //         // y: "+=3",
         //         z: "+=1.5"
         //     }
         // )
@@ -566,8 +573,6 @@ window.addEventListener("click", (event)=>
 const clock = new THREE.Clock()
 let previousTime = 0
 
-const rayOrigin = new THREE.Vector3(-3,0,0);
-const rayDirection = new THREE.Vector3(10,0,0);
 const objectsToTest = PuzzlePieces;
 let currentIntersect = null;
 
@@ -681,7 +686,7 @@ function restoreMaterial( obj ) {
 }
 
 const framesObject = {
-    maxTickRate: 30,
+    maxTickRate: 61,
 }
 
 gui.add( framesObject, 'maxTickRate' ).min( 1 ).max( 120 ).step(10);
@@ -702,118 +707,123 @@ function IsSelected(Obj){
 
 const raycaster = new THREE.Raycaster();
 
-
-const tick = (currentTime) =>
-{
-    const deltaTime = currentTime - previousTime
-    if (deltaTime >= 1000 / framesObject.maxTickRate) {
-        stats.begin();
-        previousTime = currentTime
-        //Update Mixer
-        if(mixer)
-        {
-            mixer.update(deltaTime);
-        }
-    
-        raycaster.setFromCamera(mouse, camera)
-    
-        if(raycaster != null && objectsToTest)
-        {
-            if(objectsToTest != null)
-            {
-                raycaster.intersectObjects(objectsToTest);
-                const intersects = raycaster.intersectObjects(objectsToTest);
-                for(const object of objectsToTest)
-                {
-                    if(object != null)
-                    {
-                        object.position.z = 0;
-                    }
-                }
-                for(const intersect of intersects)
-                {
-                    if(intersect != null && intersect.object != null)
-                    {
-                        // intersect.object.position.z = 0.5;
-                    }
-                }
-                if(intersects.length)
-                {
-                    if(currentIntersect === null)
-                    {
-                        console.log("mouseEnter")
-                        
-                    }
-                    // intersects[0].object.layers.enable(BLOOM_SCENE);
-                    // intersects[0].object.layers.toggle(BLOOM_SCENE);
-                    // render();
-                    currentIntersect = intersects[0]
-    
-    
-                    currentIntersect.object.position.z = 0.5;
-    
-                    // pointLight.position.x = currentIntersect.object.position.x
-                    // pointLight.position.y = currentIntersect.object.position.y
-    
-                    // currentIntersect = intersects[0]
-                }
-                else
-                {
-                    if(currentIntersect)
-                    {
-                        // console.log("Mouse Leave")
-                        // currentIntersect.object.layers.disable(BLOOM_SCENE);
-                    }
-                    currentIntersect = null;
-                }
-            }
-        }
-        for(const Piece of PuzzlePieces)
-        {
-            if(IsSelected(Piece))
-            {
-                Piece.layers.enable(BLOOM_SCENE);
-            }
-            else
-            {
-                Piece.layers.disable(BLOOM_SCENE);
-            }
-        }
-    
-        if(CameraParams.bAnimate)
-        {
-            camera.position.y = Math.sin(elapsedTime * 0.05) * 1.5;
-            camera.position.x = Math.sin(elapsedTime * 0.1) * 1.5;
-        }
-        // if(bSelectedItem == false)
-        // {
-        //     const paralaxX = mouse.x;
-        //     const paralaxY = mouse.y; // Ease the movement 
-        //     cameraGroup.position.x += (paralaxX - cameraGroup.position.x) * 5 * deltaTime;
-        //     cameraGroup.position.y += (paralaxY - cameraGroup.position.y) * 5 * deltaTime;
-        // }
-    
-        camera.updateProjectionMatrix()
-    
-    
-        // camera.position.y = -(scrollY / sizes.height * 40);
-    
-        //Update LightHelpers 
-        directionalLightCameraHelper.update();
-        pointLightHelper.update();
-    
-        // Update controls
-        controls.update()
-    
-        // Render
-        // renderer.render(scene, camera)
-        // composer.render();
-        render()
-    
-        stats.end();
-    }
-    // Call tick again on the next frame
-    window.requestAnimationFrame(tick)
+const AnimParams = {
+    SelectTime : 0.35,
+    zOffset: 2
 }
 
-tick()
+function handleSelect(object) {
+    console.log("Object selected:", object);
+    gsap.killTweensOf(object.position);
+
+    gsap.to(object.position, {
+        duration: AnimParams.SelectTime,
+        ease: "power2.inOut",
+        z: AnimParams.zOffset
+    });
+    gsap.to(object.scale, {
+        duration: AnimParams.SelectTime,
+        ease: "power2.inOut",
+        x: PuzzleScale * 1.25,
+        y: PuzzleScale * 1.25,
+        z: PuzzleScale * 1.25
+    });
+
+}
+
+// Function called when an object is deselected
+function handleDeselect(object) {
+    console.log("Object deselected:", object);
+    gsap.killTweensOf(object.position);
+
+    gsap.to(object.position, {
+        duration: AnimParams.SelectTime,
+        ease: "power2.inOut",
+        z: "0"
+    });
+    gsap.to(object.scale, {
+        duration: AnimParams.SelectTime,
+        ease: "power2.inOut",
+        x: PuzzleScale,
+        y: PuzzleScale,
+        z: PuzzleScale
+    });
+
+}
+
+gui.add( AnimParams, 'SelectTime' ).min( 0.05 ).max( 6 ).step(0.01);
+
+
+const tick = (currentTime) => {
+    // Calculate time delta and limit frame rate based on maxTickRate
+    const deltaTime = currentTime - previousTime;
+    if (deltaTime < 1000 / framesObject.maxTickRate) {
+        window.requestAnimationFrame(tick);
+        return;
+    }
+
+    stats.begin();
+    previousTime = currentTime;
+
+    // Update animations and mixers
+    if (mixer) {
+        mixer.update(deltaTime / 1000); // deltaTime is in ms; convert to seconds for update
+    }
+
+    // Handle raycasting for selection
+    if (objectsToTest) {
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(objectsToTest);
+
+        if (intersects.length > 0) {
+            // Handle selecting a new object
+            if (currentIntersect === null) {
+                currentIntersect = intersects[0];
+                handleSelect(currentIntersect.object);
+            } else if (currentIntersect.object !== intersects[0].object) {
+                // Handle deselecting previous and selecting a new object
+                handleDeselect(currentIntersect.object);
+                currentIntersect = intersects[0];
+                handleSelect(currentIntersect.object);
+            }
+        } else if (currentIntersect !== null) {
+            // Handle deselecting when no object is intersected
+            handleDeselect(currentIntersect.object);
+            currentIntersect = null;
+        }
+    }
+
+    // Update layers for bloom effect on puzzle pieces
+    PuzzlePieces.forEach((piece) => {
+        if (IsSelected(piece)) {
+            piece.layers.enable(BLOOM_SCENE);
+        } else {
+            piece.layers.disable(BLOOM_SCENE);
+        }
+    });
+
+    // Animate camera if required
+    if (CameraParams.bAnimate) {
+        const elapsedTime = clock.getElapsedTime(); // Ensure elapsedTime is calculated here
+        camera.position.y = Math.sin(elapsedTime * 0.05) * 1.5;
+        camera.position.x = Math.sin(elapsedTime * 0.1) * 1.5;
+    }
+
+    // Update camera and light helpers
+    camera.updateProjectionMatrix();
+    directionalLightCameraHelper.update();
+    pointLightHelper.update();
+
+    // Update controls
+    controls.update();
+
+    // Render the scene
+    render();
+
+    stats.end();
+
+    // Call tick again on the next frame
+    window.requestAnimationFrame(tick);
+};
+
+tick();
