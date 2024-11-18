@@ -95,8 +95,6 @@ window.addEventListener('resize', () =>
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas
 })
-renderer.shadowMap.enabled = true
-renderer.shadowMap.type = THREE.PCFSoftShadowMap
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 renderer.physicallyCorrectLights = true;
@@ -104,7 +102,8 @@ renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.toneMapping = THREE.CineonToneMapping
 renderer.toneMappingExposure = 1;
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFShadowMap
+// renderer.shadowMap.type = THREE.PCFShadowMap
+renderer.shadowMap.type = THREE.PCFSoftShadowMap
 gui.add(renderer, "toneMapping", {
     No: THREE.NoToneMapping,
     Linear: THREE.LinearToneMapping,
@@ -123,14 +122,6 @@ gui.add(renderer, "toneMappingExposure").min(0).max(10).step(0.001)
 const loadingManager = new THREE.LoadingManager();
 const textureLoader = new THREE.TextureLoader(loadingManager);
 
-const matcapTexture = textureLoader.load("static/textures/matcaps/7.png");
-
-const gradientTexture = textureLoader.load("static/textures/gradients/3.jpg");
-gradientTexture.minFilter = THREE.NearestFilter;
-gradientTexture.magFilter = THREE.NearestFilter;
-gradientTexture.generateMipmaps = false;
-
-
 const cubeTextureLoader = new THREE.CubeTextureLoader()
 const environmentMapTexture = cubeTextureLoader.load([
     'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0/px.jpg',
@@ -140,21 +131,17 @@ const environmentMapTexture = cubeTextureLoader.load([
     'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0/pz.jpg',
     'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0/nz.jpg'
 ])
-
-
-
-
-
-// const environment = new RoomEnvironment();
-// const pmremGenerator = new THREE.PMREMGenerator( renderer );
-// scene.environment = pmremGenerator.fromScene( environment ).texture;
-
+environmentMapTexture.minFilter = THREE.NearestFilter;
+environmentMapTexture.magFilter = THREE.NearestFilter;
+environmentMapTexture.generateMipmaps = true;
 environmentMapTexture.encoding = THREE.sRGBEncoding;
-scene.background = null; //environmentMapTexture
-scene.environment - environmentMapTexture;
+scene.background = null;
+scene.environment = environmentMapTexture;
 
 const debugObject = {
     envMapIntensity: 1,
+    metalness: 0.3,
+    roughness: 0.2
 }
 
 
@@ -168,42 +155,20 @@ const updateAllMaterials = () =>
             child.material.envMapIntensity = debugObject.envMapIntensity;
             child.castShadow = true;
             child.receiveShadow = true;
-            child.material.metalness = 0.3;
-            child.material.roughness = 0.2;
+            child.material.metalness = debugObject.metalness;
+            child.material.roughness = debugObject.roughness;
         }
     });
 }    
 gui.add(debugObject, "envMapIntensity").min(0).max(20).step(0.001).name("EnviromentMap Intensity").onChange(updateAllMaterials)
+gui.add(debugObject, "metalness").min(0).max(1).step(0.001).name("metalness").onChange(updateAllMaterials)
+gui.add(debugObject, "roughness").min(0).max(1).step(0.001).name("roughness").onChange(updateAllMaterials)
 
 
 /**
  *  Materials
  */
 
-// const MatcapMaterial = new THREE.MeshMatcapMaterial();
-// MatcapMaterial.matcap = matcapTexture;
-// MatcapMaterial.flatShading = true;
-
-
-// const ToonMaterial = new THREE.MeshToonMaterial();
-// ToonMaterial.gradientMap = gradientTexture;
-
-// const PhongMaterial = new THREE.MeshPhongMaterial();
-// PhongMaterial.shininess = 100;
-// PhongMaterial.specular = new THREE.Color(0xff11ff);
-
-// Depth material white when objects are close
-// const material = new THREE.MeshDepthMaterial();
-
-// const material = new THREE.MeshLambertMaterial();
-
-// const StandardMaterialEnvi = new THREE.MeshStandardMaterial({
-//     color: '#777777',
-//     metalness: 0.3,
-//     roughness: 0.4,
-//     envMap: environmentMapTexture,
-//     envMapIntensity: 0.5
-// })
 
 
 /**
@@ -213,48 +178,39 @@ const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath("/draco/");
 const gltfLoader = new GLTFLoader();
 gltfLoader.setDRACOLoader(dracoLoader);
-let mixer = null
 let PuzzlePiece_01 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
     color: Colors[0],
-    metalness: 0,
-    roughness: 1,
+    metalness: debugObject.metalness,
+    roughness: debugObject.roughness,
 }));
 let PuzzlePiece_02 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
     color: Colors[1],
-    metalness: 0,
-    roughness: 1,
+    metalness: debugObject.metalness,
+    roughness: debugObject.roughness,
 }));
 let PuzzlePiece_03 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
     color: Colors[2],
-    metalness: 0,
-    roughness: 1,
+    metalness: debugObject.metalness,
+    roughness: debugObject.roughness,
 
 }));
 let PuzzlePiece_04 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
     color: Colors[3],
-    metalness: 0,
-    roughness: 1,
+    metalness: debugObject.metalness,
+    roughness: debugObject.roughness,
 
 }));
 let PuzzlePiece_05 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
     color: Colors[4],
-    metalness: 0,
-    roughness: 1,
+    metalness: debugObject.metalness,
+    roughness: debugObject.roughness,
 
 }));
 let PuzzlePiece_06 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
     color: Colors[5],
-    metalness: 0,
-    roughness: 1,
+    metalness: debugObject.metalness,
+    roughness: debugObject.roughness,
 }));
-let Sphere_01 = new THREE.Mesh(new THREE.SphereGeometry(10, 10, 16), new THREE.MeshStandardMaterial({
-    color: Colors[5],
-    metalness: 0,
-    roughness: 1,
-}));
-// Sphere_01.geometry.computeVertexNormals();
-
-// scene.add(Sphere_01);
 
 let PuzzlePieces = [PuzzlePiece_01, PuzzlePiece_02, PuzzlePiece_03, PuzzlePiece_04, PuzzlePiece_05, PuzzlePiece_06];
 
@@ -268,7 +224,7 @@ const PositionTotalLeft = 1.75;
 const PuzzleScale = 30;
 const RotationX = Math.PI * 0.5;
 gltfLoader.load(
-    "https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/models/Jigsaws_06.gltf",
+    "https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/models/Jigsaws_07_LowPoly.gltf",
     (gltf) =>{
         let nodeIndex = 0;
         gltf.scene.traverse((node) => {
@@ -335,7 +291,6 @@ scene.add(floor)
  * Helpers
  */
 
-
 const gridHelper = new THREE.GridHelper();
 
 const axesHelper = new THREE.AxesHelper(1);
@@ -353,7 +308,6 @@ guiHelperFolder.add(gridHelper, "visible").name("gridHelper")
 guiHelperFolder.add(floor, "visible").name("Floor");
 
 
-
 /**
  * Lights
  */
@@ -361,6 +315,7 @@ guiHelperFolder.add(floor, "visible").name("Floor");
 
 const hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 2 );
 hemiLight.color.setHSL( 0.6, 1, 0.6 );
+hemiLight.castShadow = false;
 hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
 hemiLight.position.set( 0, 50, 0 );
 scene.add( hemiLight );
@@ -371,19 +326,15 @@ scene.add( hemiLightHelper );
 
 
 //Low Cost
-// const ambientLight = new THREE.AmbientLight(0xffffff, 0.8)
-// ambientLight.intensity = 0
-// scene.add(ambientLight)
-
 const LightParams = {
-    Mapsize: 1024,
+    Mapsize: 512,
 }
 
 //Mid Cost 
 const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6)
 directionalLight.castShadow = true
 directionalLight.shadow.mapSize.set(LightParams.Mapsize, LightParams.Mapsize)
-directionalLight.shadow.camera.far = 15
+directionalLight.shadow.camera.far = 10
 directionalLight.shadow.camera.left = - 7
 directionalLight.shadow.camera.top = 7
 directionalLight.shadow.camera.right = 7
@@ -399,44 +350,15 @@ scene.add(directionalLightCameraHelper);
 guiHelperFolder.add(directionalLightCameraHelper, "visible").name("Directional Helper");
 
 
-// const pointLight = new THREE.PointLight(0xffffff, 0.5);
-// pointLight.position.x = 2;
-// pointLight.position.y = 3;
-// pointLight.position.z = 4;
-// pointLight.intensity = 0.76;
-// pointLight.scale.set(10,10,10)
-// scene.add(pointLight);
-
-// const pointLightHelper = new THREE.PointLightHelper(pointLight, 0.2);
-// pointLightHelper.visible = false;
-// scene.add(pointLightHelper);
-// guiHelperFolder.add(pointLightHelper, "visible").name("point Helper");
-
-//High Cost
-//Only works with MeshPhysical MeshStandardMaterial  
-// const rectAreaLight = new THREE.RectAreaLight(0x4e00ff, 2, 5, 1);
-// rectAreaLight.position.set(-1.5,0,3.5);
-// rectAreaLight.lookAt(new THREE.Vector3);
-// // const rectAreaLightHelper = new RectAreaLightHelper(rectAreaLight);
-// scene.add(rectAreaLight)
-//Have to add the .target to the scene to change it's location
-// const spotLight = new THREE.SpotLight(0x78ff00, 0.5, 10, Math.PI * 0.1, 0.25, 1);
-// spotLight.position.set(0,2,3);
-// //look at location
-// spotLight.target.position.x = 0.5;
-
-
-
-
 const PositionMax = 20;
 
 const guiLightsFolder = gui.addFolder("Lights");
-// guiLightsFolder.add(pointLight, "intensity").min(0).max(10).step(0.01).name("Point");
 guiLightsFolder.add(directionalLight, "intensity").min(0).max(10).step(0.01).name("Directional");
-// guiLightsFolder.add(ambientLight, "intensity").min(0).max(10).step(0.01).name("Ambient");
 guiLightsFolder.add(directionalLight.position, "x").min(-PositionMax).max(PositionMax).step(0.01).name("Directional x");
 guiLightsFolder.add(directionalLight.position, "y").min(-PositionMax).max(PositionMax).step(0.01).name("Directional y");
 guiLightsFolder.add(directionalLight.position, "z").min(-PositionMax).max(PositionMax).step(0.01).name("Directional z");
+guiLightsFolder.add(directionalLight, "visible").name("Directional");
+guiLightsFolder.add(hemiLight, "visible").name("hemi");
 
 
 
@@ -747,14 +669,8 @@ const tick = (currentTime) => {
         window.requestAnimationFrame(tick);
         return;
     }
-
     stats.begin();
     previousTime = currentTime;
-
-    // Update animations and mixers
-    if (mixer) {
-        mixer.update(deltaTime / 1000); // deltaTime is in ms; convert to seconds for update
-    }
 
     // Handle raycasting for selection
     if (objectsToTest) {
