@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    // Create scene, camera, and renderer
     const container = document.getElementById("three-container");
 
     const scene = new THREE.Scene();
@@ -10,10 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // GUI Setup
     const gui = new lil.GUI({ title: "Menu", width: 250 });
     gui.hide();
-    const debugObject = {
-        envMapIntensity: 1,
-    }
-        window.addEventListener("keydown", (event) => {
+    window.addEventListener("keydown", (event) => {
         if (event.key === "h") {
            if (gui._hidden) {
                 gui.show();
@@ -26,36 +22,34 @@ document.addEventListener("DOMContentLoaded", function () {
         width: window.innerWidth,
         height: window.innerHeight
     }
+    const stats = new Stats();
+    stats.showPanel(0);
+    document.body.appendChild( stats.dom );
+
     window.addEventListener('resize', () =>
     {
         // Update sizes
         sizes.width = window.innerWidth
         sizes.height = window.innerHeight
-
         // Update camera
         camera.aspect = sizes.width / sizes.height
         camera.updateProjectionMatrix()
-
         // Update renderer
         renderer.setSize(sizes.width, sizes.height)
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     })
 
-
     // Set renderer size and append it to the container
     const renderer = new THREE.WebGLRenderer({alpha: true});
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.shadowMap.enabled = true
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap
-    
     renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    // renderer.setSize(container.clientWidth, container.clientHeight);    
     renderer.physicallyCorrectLights = true;
     renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.toneMapping = THREE.CineonToneMapping
     renderer.toneMappingExposure = 1;
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFShadowMap
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap
     gui.add(renderer, "toneMapping", {
         No: THREE.NoToneMapping,
         Linear: THREE.LinearToneMapping,
@@ -67,9 +61,6 @@ document.addEventListener("DOMContentLoaded", function () {
     })
     gui.add(renderer, "toneMappingExposure").min(0).max(10).step(0.001)
     container.appendChild(renderer.domElement);
-
-
-
 
     const Colors =[
         new THREE.Color("#00d6d3"),
@@ -85,16 +76,26 @@ document.addEventListener("DOMContentLoaded", function () {
     // Environment Map
     const cubeTextureLoader = new THREE.CubeTextureLoader()
     const environmentMapTexture = cubeTextureLoader.load([
-        'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0/px.jpg',
-        'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0/nx.jpg',
-        'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0/py.jpg',
-        'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0/ny.jpg',
-        'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0/pz.jpg',
-        'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0/nz.jpg'
+        'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0-1/px.jpg',
+        'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0-1/nx.jpg',
+        'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0-1/py.jpg',
+        'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0-1/ny.jpg',
+        'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0-1/pz.jpg',
+        'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0-1/nz.jpg'
     ])
+    environmentMapTexture.minFilter = THREE.NearestFilter;
+    environmentMapTexture.magFilter = THREE.NearestFilter;
+    environmentMapTexture.generateMipmaps = true;
+
     environmentMapTexture.encoding = THREE.sRGBEncoding;
     scene.background = null; //environmentMapTexture
-    scene.environment - environmentMapTexture;
+    scene.environment = environmentMapTexture;
+    
+    const debugObject = {
+        envMapIntensity: 1,
+        metalness: 0.3,
+        roughness: 0.2
+    }
     
     const updateAllMaterials = () => {
         scene.traverse((child) => {
@@ -103,14 +104,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 child.material.envMapIntensity = debugObject.envMapIntensity;
                 child.castShadow = true;
                 child.receiveShadow = true;
-                child.material.metalness = 0.3;
-                child.material.roughness = 0.2;
+                child.material.metalness = debugObject.metalness;
+                child.material.roughness = debugObject.roughness;
         
             }
         });
     };
     gui.add(debugObject, "envMapIntensity").min(0).max(20).step(0.001).name("EnvironmentMap Intensity").onChange(updateAllMaterials);
-
+    gui.add(debugObject, "metalness").min(0).max(1).step(0.001).name("metalness").onChange(updateAllMaterials)
+    gui.add(debugObject, "roughness").min(0).max(1).step(0.001).name("roughness").onChange(updateAllMaterials)
+    
     /**
      * Models
      */
@@ -118,39 +121,35 @@ document.addEventListener("DOMContentLoaded", function () {
     dracoLoader.setDecoderPath("/draco/");
     const gltfLoader = new THREE.GLTFLoader();
     gltfLoader.setDRACOLoader(dracoLoader);
-    let mixer = null
     let PuzzlePiece_01 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
         color: Colors[0],
-        metalness: 0,
-        roughness: 1,
+        metalness: debugObject.metalness,
+        roughness: debugObject.roughness,
     }));
     let PuzzlePiece_02 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
         color: Colors[1],
-        metalness: 0,
-        roughness: 1,
+        metalness: debugObject.metalness,
+        roughness: debugObject.roughness,
     }));
     let PuzzlePiece_03 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
         color: Colors[2],
-        metalness: 0,
-        roughness: 1,
-
+        metalness: debugObject.metalness,
+        roughness: debugObject.roughness,
     }));
     let PuzzlePiece_04 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
         color: Colors[3],
-        metalness: 0,
-        roughness: 1,
-
+        metalness: debugObject.metalness,
+        roughness: debugObject.roughness,
     }));
     let PuzzlePiece_05 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
         color: Colors[4],
-        metalness: 0,
-        roughness: 1,
-
+        metalness: debugObject.metalness,
+        roughness: debugObject.roughness,
     }));
     let PuzzlePiece_06 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
         color: Colors[5],
-        metalness: 0,
-        roughness: 1,
+        metalness: debugObject.metalness,
+        roughness: debugObject.roughness,
     }));
 
     let PuzzlePieces = [PuzzlePiece_01, PuzzlePiece_02, PuzzlePiece_03, PuzzlePiece_04, PuzzlePiece_05, PuzzlePiece_06];
@@ -165,7 +164,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const PuzzleScale = 30;
     const RotationX = Math.PI * 0.5;
     gltfLoader.load(
-        "https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/models/Jigsaws_06.gltf",
+        "https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/models/Jigsaws_07_LowPoly.gltf",
         (gltf) =>{
             let nodeIndex = 0;
             gltf.scene.traverse((node) => {
@@ -193,9 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 PuzzlePiece.castShadow = true;
                 scene.add(PuzzlePiece);
             }
-
-            updateAllMaterials() 
-
+            updateAllMaterials();
         },
         () =>{
             console.log("Loading..")
@@ -207,43 +204,9 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
     /**
-     * Floor
-     */
-    const floor = new THREE.Mesh(
-        new THREE.PlaneGeometry(10, 10),
-        new THREE.MeshStandardMaterial({
-            color: '#444444',
-            metalness: 0,
-            roughness: 1.5
-        })
-    )
-    floor.receiveShadow = true
-    floor.rotation.x = - Math.PI * 0.5;
-    floor.position.set(0,-3,0);
-    floor.visible = false
-
-    scene.add(floor)
-
-    /**
      * Helpers
      */
-
-
-    const gridHelper = new THREE.GridHelper();
-
-    const axesHelper = new THREE.AxesHelper(1);
-    axesHelper.visible = false;
-    gridHelper.visible = false;
-
     const guiHelperFolder = gui.addFolder("Helpers");
-
-    scene.add(axesHelper)
-    scene.add(gridHelper)
-
-
-    guiHelperFolder.add(axesHelper, "visible").name("AxesHelper");
-    guiHelperFolder.add(gridHelper, "visible").name("gridHelper")
-    guiHelperFolder.add(floor, "visible").name("Floor");
 
     /**
      * Lights
@@ -251,6 +214,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 2 );
     hemiLight.color.setHSL( 0.6, 1, 0.6 );
+    hemiLight.castShadow = false;
     hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
     hemiLight.position.set( 0, 50, 0 );
     scene.add( hemiLight );
@@ -259,14 +223,14 @@ document.addEventListener("DOMContentLoaded", function () {
     scene.add( hemiLightHelper );
 
     const LightParams = {
-        Mapsize: 1024,
+        Mapsize: 512,
     }
 
     //Mid Cost 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6)
     directionalLight.castShadow = true
     directionalLight.shadow.mapSize.set(LightParams.Mapsize, LightParams.Mapsize)
-    directionalLight.shadow.camera.far = 15
+    directionalLight.shadow.camera.far = 10
     directionalLight.shadow.camera.left = - 7
     directionalLight.shadow.camera.top = 7
     directionalLight.shadow.camera.right = 7
@@ -288,7 +252,9 @@ document.addEventListener("DOMContentLoaded", function () {
     guiLightsFolder.add(directionalLight.position, "x").min(-PositionMax).max(PositionMax).step(0.01).name("Directional x");
     guiLightsFolder.add(directionalLight.position, "y").min(-PositionMax).max(PositionMax).step(0.01).name("Directional y");
     guiLightsFolder.add(directionalLight.position, "z").min(-PositionMax).max(PositionMax).step(0.01).name("Directional z");
-    
+    guiLightsFolder.add(directionalLight, "visible").name("Directional");
+    guiLightsFolder.add(hemiLight, "visible").name("hemi");
+
     /**
      * Camera
      */
@@ -315,7 +281,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    // Orbit Controls (commented since it may need more complex configuration for Squarespace)
+    // Orbit Controls
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.target.set(0, 0.75, 0)
     controls.enableDamping = true;
@@ -332,7 +298,45 @@ document.addEventListener("DOMContentLoaded", function () {
             mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
         }
     )
-
+    /**
+     * Selecting
+     */
+    let bSelectedItem = false;
+    window.addEventListener("click", (event)=>
+        {
+            // gsap.to(
+            //     currentIntersect.object.position,
+            //     {
+            //         duration: 1.5,
+            //         ease: "power2.inOut",
+            //         // x: "+=6",
+            //         // y: "+=3",
+            //         z: "+=1.5"
+            //     }
+            // )
+    
+            if(currentIntersect)
+            {
+                // currentIntersect.object.layers.toggle(BLOOM_SCENE);
+                // render();
+            //     console.log(objectsToTest.findIndex((item) => item === currentIntersect.object))
+            //     bSelectedItem = !bSelectedItem;
+            //     if(bSelectedItem)
+            //     {
+            //         camera.position.set(currentIntersect.object.position.x, currentIntersect.object.position.y, 5);
+            //     }
+            //     else
+            //     {
+            //         camera.position.copy(CameraParams.startLocation)
+            //     }
+            // }
+            // else
+            // {
+            //     bSelectedItem = false;
+            //     camera.position.copy(CameraParams.startLocation)
+            }
+        }
+    )
     /**
      * Animate
      */
@@ -342,11 +346,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const objectsToTest = PuzzlePieces;
     let currentIntersect = null;
 
-    // Post
+    /**
+     * Post Processing
+     */
     const composer = new THREE.EffectComposer( renderer );
     const renderPass = new THREE.RenderPass( scene, camera );
     composer.addPass( renderPass );
-
 
     const ssaoPass = new THREE.SSAOPass(scene, camera, sizes.width, sizes.height);
     composer.addPass(ssaoPass);
@@ -371,7 +376,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const bloomLayer = new THREE.Layers();
     bloomLayer.set( BLOOM_SCENE );
 
-
     const bloomParams = {
         threshold: 0.4,
         strength: 1,
@@ -382,18 +386,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), bloomParams.strength, bloomParams.radius, bloomParams.threshold );
     composer.addPass(bloomPass);
 
-    
     // Replace OutputPass with ShaderPass using CopyShader
     const outputPass = new THREE.ShaderPass(THREE.CopyShader);
     composer.addPass(outputPass);
-
 
     const bloomComposer = new THREE.EffectComposer( renderer );
     bloomComposer.renderToScreen = true;
     bloomComposer.addPass( renderPass );
     bloomComposer.addPass( bloomPass );
     
-
     const mixPass = new THREE.ShaderPass(
         new THREE.ShaderMaterial( {
             uniforms: {
@@ -423,41 +424,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     function render() {
-
         scene.traverse( darkenNonBloomed );
         bloomComposer.render();
         scene.traverse( restoreMaterial );
-        
         // render the entire scene, then render bloom scene on top
         finalComposer.render();
-    
     }
     
-    function darkenNonBloomed( obj ) {
-
-        if ( obj.isMesh && bloomLayer.test( obj.layers ) === false ) {
-    
+    function darkenNonBloomed( obj ) 
+    {
+        if ( obj.isMesh && bloomLayer.test( obj.layers ) === false ) 
+        {
             materials[ obj.uuid ] = obj.material;
             obj.material = darkMaterial;
         }
     }
     
-    function restoreMaterial( obj ) {
-    
-        if ( materials[ obj.uuid ] ) {
-    
+    function restoreMaterial( obj ) 
+    {
+        if ( materials[ obj.uuid ] ) 
+        {
             obj.material = materials[ obj.uuid ];
             delete materials[ obj.uuid ];
-    
         }
-    }
-
-    function IsSelected(Obj){
-        if(currentIntersect != null)
-        {
-            return Obj === currentIntersect.object;
-        }
-        return false;
     }
     
     const framesObject = {
@@ -521,10 +510,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
         previousTime = currentTime;
-        // Update animations and mixers
-        if (mixer) {
-            mixer.update(deltaTime / 1000); // deltaTime is in ms; convert to seconds for update
-        }
+        stats.begin();
         // Handle raycasting for selection
         if (objectsToTest) {
             raycaster.setFromCamera(mouse, camera);
@@ -547,15 +533,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 currentIntersect = null;
             }
         }
-        // Update layers for bloom effect on puzzle pieces
-        PuzzlePieces.forEach((piece) => {
-            if (IsSelected(piece)) {
-                piece.layers.enable(BLOOM_SCENE);
-            } else {
-                piece.layers.disable(BLOOM_SCENE);
-            }
-        });
-
         // Animate camera if required
         if (CameraParams.bAnimate) {
             const elapsedTime = clock.getElapsedTime(); // Ensure elapsedTime is calculated here
@@ -571,9 +548,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         render();
 
+        stats.end();
         // Request the next frame
         requestAnimationFrame(tick);
     }
-
     tick();
 });

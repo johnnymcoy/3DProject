@@ -57,8 +57,7 @@ const materials = {};
 
 // Canvas
 
-let stats;
-stats = new Stats();
+const stats = new Stats();
 document.body.appendChild( stats.dom );
 
 const canvas = document.querySelector('canvas.webgl')
@@ -93,7 +92,7 @@ window.addEventListener('resize', () =>
  * Renderer
  */
 const renderer = new THREE.WebGLRenderer({
-    canvas: canvas
+    canvas: canvas, alpha: true
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
@@ -230,9 +229,7 @@ gltfLoader.load(
         gltf.scene.traverse((node) => {
             if(node.type == "Mesh")
             {
-                // node.geometry.computeVertexNormals();
                 PuzzlePieces[nodeIndex - 1].geometry = node.geometry;
-                // PuzzlePieces[nodeIndex - 1].geometry.computeVertexNormals();
                 PuzzlePieces[nodeIndex - 1].rotation.set(RotationX,0,0);
                 PuzzlePieces[nodeIndex -1].receiveShadow = true;
                 PuzzlePieces[nodeIndex -1].castShadow = true;
@@ -254,12 +251,10 @@ gltfLoader.load(
             PuzzlePiece.castShadow = true;
             scene.add(PuzzlePiece);
         }
-
-        updateAllMaterials() 
-
+        updateAllMaterials();
     },
     () =>{
-        console.log("Progress")
+        console.log("Loading.. ")
         updateAllMaterials();
     },
     (e) =>{
@@ -286,6 +281,10 @@ floor.visible = false
 
 scene.add(floor)
 
+const guiHelperFolder = gui.addFolder("Helpers");
+
+guiHelperFolder.add(floor, "visible").name("Floor");
+
 
 /**
  * Helpers
@@ -297,7 +296,6 @@ const axesHelper = new THREE.AxesHelper(1);
 axesHelper.visible = false;
 gridHelper.visible = false;
 
-const guiHelperFolder = gui.addFolder("Helpers");
 
 scene.add(axesHelper)
 scene.add(gridHelper)
@@ -305,7 +303,6 @@ scene.add(gridHelper)
 
 guiHelperFolder.add(axesHelper, "visible").name("AxesHelper");
 guiHelperFolder.add(gridHelper, "visible").name("gridHelper")
-guiHelperFolder.add(floor, "visible").name("Floor");
 
 
 /**
@@ -430,9 +427,10 @@ guiCameraFolder.add(controls, "enabled");
 const mouse = new THREE.Vector2();
 window.addEventListener("mousemove", (event)=>
     {
-        mouse.x = event.clientX / sizes.width * 2 - 1;
-        mouse.y = -(event.clientY / sizes.height) * 2 + 1;
-    }
+        const rect = canvas.getBoundingClientRect(); // Get the bounding box of the canvas
+        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+}
 )
 
 let bSelectedItem = false;
