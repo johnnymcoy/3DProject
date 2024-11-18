@@ -133,21 +133,21 @@ gradientTexture.generateMipmaps = false;
 
 const cubeTextureLoader = new THREE.CubeTextureLoader()
 const environmentMapTexture = cubeTextureLoader.load([
-    'static/textures/environmentMaps/0/px.jpg',
-    'static/textures/environmentMaps/0/nx.jpg',
-    'static/textures/environmentMaps/0/py.jpg',
-    'static/textures/environmentMaps/0/ny.jpg',
-    'static/textures/environmentMaps/0/pz.jpg',
-    'static/textures/environmentMaps/0/nz.jpg'
+    'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0/px.jpg',
+    'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0/nx.jpg',
+    'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0/py.jpg',
+    'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0/ny.jpg',
+    'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0/pz.jpg',
+    'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0/nz.jpg'
 ])
 
 
 
 
 
-const environment = new RoomEnvironment();
-const pmremGenerator = new THREE.PMREMGenerator( renderer );
-scene.environment = pmremGenerator.fromScene( environment ).texture;
+// const environment = new RoomEnvironment();
+// const pmremGenerator = new THREE.PMREMGenerator( renderer );
+// scene.environment = pmremGenerator.fromScene( environment ).texture;
 
 environmentMapTexture.encoding = THREE.sRGBEncoding;
 scene.background = null; //environmentMapTexture
@@ -169,7 +169,7 @@ const updateAllMaterials = () =>
             child.castShadow = true;
             child.receiveShadow = true;
             child.material.metalness = 0.3;
-            child.material.roughness = 0.4;
+            child.material.roughness = 0.2;
         }
     });
 }    
@@ -180,17 +180,17 @@ gui.add(debugObject, "envMapIntensity").min(0).max(20).step(0.001).name("Envirom
  *  Materials
  */
 
-const MatcapMaterial = new THREE.MeshMatcapMaterial();
-MatcapMaterial.matcap = matcapTexture;
-MatcapMaterial.flatShading = true;
+// const MatcapMaterial = new THREE.MeshMatcapMaterial();
+// MatcapMaterial.matcap = matcapTexture;
+// MatcapMaterial.flatShading = true;
 
 
-const ToonMaterial = new THREE.MeshToonMaterial();
-ToonMaterial.gradientMap = gradientTexture;
+// const ToonMaterial = new THREE.MeshToonMaterial();
+// ToonMaterial.gradientMap = gradientTexture;
 
-const PhongMaterial = new THREE.MeshPhongMaterial();
-PhongMaterial.shininess = 100;
-PhongMaterial.specular = new THREE.Color(0xff11ff);
+// const PhongMaterial = new THREE.MeshPhongMaterial();
+// PhongMaterial.shininess = 100;
+// PhongMaterial.specular = new THREE.Color(0xff11ff);
 
 // Depth material white when objects are close
 // const material = new THREE.MeshDepthMaterial();
@@ -218,8 +218,6 @@ let PuzzlePiece_01 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new T
     color: Colors[0],
     metalness: 0,
     roughness: 1,
-    envMap: environmentMapTexture,
-    envMapIntensity: 0.5
 }));
 let PuzzlePiece_02 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
     color: Colors[1],
@@ -262,7 +260,7 @@ const PositionTotalLeft = 1.75;
 const PuzzleScale = 30;
 const RotationX = Math.PI * 0.5;
 gltfLoader.load(
-    "/static/models/Jigsaws_06.gltf",
+    "https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/models/Jigsaws_06.gltf",
     (gltf) =>{
         let nodeIndex = 0;
         gltf.scene.traverse((node) => {
@@ -272,28 +270,7 @@ gltfLoader.load(
                 PuzzlePieces[nodeIndex - 1].rotation.set(RotationX,0,0);
                 PuzzlePieces[nodeIndex -1].receiveShadow = true;
                 PuzzlePieces[nodeIndex -1].castShadow = true;
-                // new THREE.MeshStandardMaterial ({
-                //     color: Colors[nodeIndex -1],
-                //     metalness: 0,
-                //     roughness: 1,
-                //     // envMap: environmentMapTexture,
-                //     // envMapIntensity: 0.5
-                // });
-                // PuzzlePieces[nodeIndex -1].material = PhongMaterial;
             }
-            // PuzzlePieces[nodeIndex].geometry = node.geometry;
-            // for(const PuzzlePiece of PuzzlePieces)
-            //     {
-            //         PuzzlePiece.geometry = node.geometry;
-            //         PuzzlePiece.receiveShadow = true;
-            //         PuzzlePiece.material = new THREE.MeshStandardMaterial({
-            //             color: new THREE.Color(Math.random(), Math.random(), Math.random()),
-            //             metalness: 0.3,
-            //             roughness: 0.4,
-            //             envMap: environmentMapTexture,
-            //             envMapIntensity: 0.5
-            //         });
-            //     }
             nodeIndex++
         })
         PuzzlePiece_01.position.set(-PositionMoveRight + PositionTotalLeft,PositionMoveUp + PositionTotalDown,0);
@@ -384,9 +361,9 @@ scene.add( hemiLightHelper );
 
 
 //Low Cost
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.8)
-ambientLight.intensity = 0
-scene.add(ambientLight)
+// const ambientLight = new THREE.AmbientLight(0xffffff, 0.8)
+// ambientLight.intensity = 0
+// scene.add(ambientLight)
 
 const LightParams = {
     Mapsize: 1024,
@@ -412,18 +389,18 @@ scene.add(directionalLightCameraHelper);
 guiHelperFolder.add(directionalLightCameraHelper, "visible").name("Directional Helper");
 
 
-const pointLight = new THREE.PointLight(0xffffff, 0.5);
-pointLight.position.x = 2;
-pointLight.position.y = 3;
-pointLight.position.z = 4;
-pointLight.intensity = 0.76;
+// const pointLight = new THREE.PointLight(0xffffff, 0.5);
+// pointLight.position.x = 2;
+// pointLight.position.y = 3;
+// pointLight.position.z = 4;
+// pointLight.intensity = 0.76;
 // pointLight.scale.set(10,10,10)
 // scene.add(pointLight);
 
-const pointLightHelper = new THREE.PointLightHelper(pointLight, 0.2);
-pointLightHelper.visible = false;
-scene.add(pointLightHelper);
-guiHelperFolder.add(pointLightHelper, "visible").name("point Helper");
+// const pointLightHelper = new THREE.PointLightHelper(pointLight, 0.2);
+// pointLightHelper.visible = false;
+// scene.add(pointLightHelper);
+// guiHelperFolder.add(pointLightHelper, "visible").name("point Helper");
 
 //High Cost
 //Only works with MeshPhysical MeshStandardMaterial  
@@ -444,9 +421,9 @@ guiHelperFolder.add(pointLightHelper, "visible").name("point Helper");
 const PositionMax = 20;
 
 const guiLightsFolder = gui.addFolder("Lights");
-guiLightsFolder.add(pointLight, "intensity").min(0).max(10).step(0.01).name("Point");
+// guiLightsFolder.add(pointLight, "intensity").min(0).max(10).step(0.01).name("Point");
 guiLightsFolder.add(directionalLight, "intensity").min(0).max(10).step(0.01).name("Directional");
-guiLightsFolder.add(ambientLight, "intensity").min(0).max(10).step(0.01).name("Ambient");
+// guiLightsFolder.add(ambientLight, "intensity").min(0).max(10).step(0.01).name("Ambient");
 guiLightsFolder.add(directionalLight.position, "x").min(-PositionMax).max(PositionMax).step(0.01).name("Directional x");
 guiLightsFolder.add(directionalLight.position, "y").min(-PositionMax).max(PositionMax).step(0.01).name("Directional y");
 guiLightsFolder.add(directionalLight.position, "z").min(-PositionMax).max(PositionMax).step(0.01).name("Directional z");
@@ -579,7 +556,6 @@ let currentIntersect = null;
 
 // Post
 
-
 const composer = new EffectComposer( renderer );
 const renderPass = new RenderPass( scene, camera );
 composer.addPass( renderPass );
@@ -651,7 +627,7 @@ bloomFolder.add( bloomParams, 'threshold', 0.0, 1.0 ).onChange( function ( value
 const finalComposer = new EffectComposer( renderer );
 finalComposer.addPass( renderPass );
 finalComposer.addPass( mixPass );
-finalComposer.addPass(ssaoPass);
+finalComposer.addPass( ssaoPass );
 finalComposer.addPass( outputPass );
 
 
@@ -715,7 +691,7 @@ const AnimParams = {
 function handleSelect(object) {
     console.log("Object selected:", object);
     gsap.killTweensOf(object.position);
-
+    object.layers.enable(BLOOM_SCENE);
     gsap.to(object.position, {
         duration: AnimParams.SelectTime,
         ease: "power2.inOut",
@@ -728,13 +704,13 @@ function handleSelect(object) {
         y: PuzzleScale * 1.25,
         z: PuzzleScale * 1.25
     });
-
 }
 
 // Function called when an object is deselected
 function handleDeselect(object) {
     console.log("Object deselected:", object);
     gsap.killTweensOf(object.position);
+    object.layers.disable(BLOOM_SCENE);
 
     gsap.to(object.position, {
         duration: AnimParams.SelectTime,
@@ -794,13 +770,13 @@ const tick = (currentTime) => {
     }
 
     // Update layers for bloom effect on puzzle pieces
-    PuzzlePieces.forEach((piece) => {
-        if (IsSelected(piece)) {
-            piece.layers.enable(BLOOM_SCENE);
-        } else {
-            piece.layers.disable(BLOOM_SCENE);
-        }
-    });
+    // PuzzlePieces.forEach((piece) => {
+    //     if (IsSelected(piece)) {
+    //         piece.layers.enable(BLOOM_SCENE);
+    //     } else {
+    //         piece.layers.disable(BLOOM_SCENE);
+    //     }
+    // });
 
     // Animate camera if required
     if (CameraParams.bAnimate) {
@@ -812,7 +788,7 @@ const tick = (currentTime) => {
     // Update camera and light helpers
     camera.updateProjectionMatrix();
     directionalLightCameraHelper.update();
-    pointLightHelper.update();
+    // pointLightHelper.update();
 
     // Update controls
     controls.update();

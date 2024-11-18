@@ -403,3 +403,21 @@ const raycaster = new THREE.Raycaster();
 // console.log(intersect);
 // const intersects = raycaster.intersectObjects([object1,object2,object3]);
 // console.log(intersects);
+
+
+    // Materials Setup
+    // const matcapTexture = new THREE.TextureLoader().load('https://your-path/static/textures/matcaps/7.png');
+    // const gradientTexture = new THREE.TextureLoader().load('https://your-path/static/textures/gradients/3.jpg');
+    // gradientTexture.minFilter = THREE.NearestFilter;
+    // gradientTexture.magFilter = THREE.NearestFilter;
+    // gradientTexture.generateMipmaps = false;
+
+    // const MatcapMaterial = new THREE.MeshMatcapMaterial({ matcap: matcapTexture, flatShading: true });
+    // const ToonMaterial = new THREE.MeshToonMaterial({ gradientMap: gradientTexture });
+    // const StandardMaterialEnvi = new THREE.MeshStandardMaterial({
+    //     color: '#777777',
+    //     metalness: 0.3,
+    //     roughness: 0.4,
+    //     envMap: environmentMapTexture,
+    //     envMapIntensity: 0.5
+    // });
