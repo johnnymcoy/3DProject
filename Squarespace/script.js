@@ -1,12 +1,15 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-
     // Create scene, camera, and renderer
     const container = document.getElementById("three-container");
-    const canvas = document.querySelector("canvas.webgl");
+
+    const scene = new THREE.Scene();
+
+    container.style.background = "none";
 
     // GUI Setup
     const gui = new lil.GUI({ title: "Menu", width: 250 });
+    gui.hide();
     const debugObject = {
         envMapIntensity: 1,
     }
@@ -19,7 +22,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
     });
-
     const sizes = {
         width: window.innerWidth,
         height: window.innerHeight
@@ -39,13 +41,13 @@ document.addEventListener("DOMContentLoaded", function () {
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     })
 
-    const scene = new THREE.Scene();
 
     // Set renderer size and append it to the container
-    const renderer = new THREE.WebGLRenderer();
+    const renderer = new THREE.WebGLRenderer({alpha: true});
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.shadowMap.enabled = true
     renderer.shadowMap.type = THREE.PCFSoftShadowMap
+    
     renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     renderer.physicallyCorrectLights = true;
@@ -325,8 +327,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const mouse = new THREE.Vector2();
     window.addEventListener("mousemove", (event)=>
         {
-            mouse.x = event.clientX / sizes.width * 2 - 1;
-            mouse.y = -(event.clientY / sizes.height) * 2 + 1;
+            const rect = container.getBoundingClientRect(); // Get the bounding box of the canvas
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
         }
     )
 

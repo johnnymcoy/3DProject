@@ -247,6 +247,14 @@ let PuzzlePiece_06 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new T
     metalness: 0,
     roughness: 1,
 }));
+let Sphere_01 = new THREE.Mesh(new THREE.SphereGeometry(10, 10, 16), new THREE.MeshStandardMaterial({
+    color: Colors[5],
+    metalness: 0,
+    roughness: 1,
+}));
+// Sphere_01.geometry.computeVertexNormals();
+
+// scene.add(Sphere_01);
 
 let PuzzlePieces = [PuzzlePiece_01, PuzzlePiece_02, PuzzlePiece_03, PuzzlePiece_04, PuzzlePiece_05, PuzzlePiece_06];
 
@@ -266,7 +274,9 @@ gltfLoader.load(
         gltf.scene.traverse((node) => {
             if(node.type == "Mesh")
             {
+                // node.geometry.computeVertexNormals();
                 PuzzlePieces[nodeIndex - 1].geometry = node.geometry;
+                // PuzzlePieces[nodeIndex - 1].geometry.computeVertexNormals();
                 PuzzlePieces[nodeIndex - 1].rotation.set(RotationX,0,0);
                 PuzzlePieces[nodeIndex -1].receiveShadow = true;
                 PuzzlePieces[nodeIndex -1].castShadow = true;
