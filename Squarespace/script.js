@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", function () {
 
     const container = document.getElementById("three-container");
@@ -113,7 +114,40 @@ document.addEventListener("DOMContentLoaded", function () {
     gui.add(debugObject, "envMapIntensity").min(0).max(20).step(0.001).name("EnvironmentMap Intensity").onChange(updateAllMaterials);
     gui.add(debugObject, "metalness").min(0).max(1).step(0.001).name("metalness").onChange(updateAllMaterials)
     gui.add(debugObject, "roughness").min(0).max(1).step(0.001).name("roughness").onChange(updateAllMaterials)
-    
+    /**
+     * Materials
+     */
+    const Material_01 = new THREE.MeshStandardMaterial({
+        color: Colors[0],
+        metalness: debugObject.metalness,
+        roughness: debugObject.roughness,
+    });
+    const Material_02 = new THREE.MeshStandardMaterial({
+        color: Colors[1],
+        metalness: debugObject.metalness,
+        roughness: debugObject.roughness,
+    })
+    const Material_03 = new THREE.MeshStandardMaterial({
+        color: Colors[2],
+        metalness: debugObject.metalness,
+        roughness: debugObject.roughness,
+    })
+    const Material_04 = new THREE.MeshStandardMaterial({
+        color: Colors[3],
+        metalness: debugObject.metalness,
+        roughness: debugObject.roughness,
+    })
+    const Material_05 = new THREE.MeshStandardMaterial({
+        color: Colors[4],
+        metalness: debugObject.metalness,
+        roughness: debugObject.roughness,
+    })
+    const Material_06 = new THREE.MeshStandardMaterial({
+        color: Colors[5],
+        metalness: debugObject.metalness,
+        roughness: debugObject.roughness,
+    })
+
     /**
      * Models
      */
@@ -121,37 +155,15 @@ document.addEventListener("DOMContentLoaded", function () {
     dracoLoader.setDecoderPath("/draco/");
     const gltfLoader = new THREE.GLTFLoader();
     gltfLoader.setDRACOLoader(dracoLoader);
-    let PuzzlePiece_01 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
-        color: Colors[0],
-        metalness: debugObject.metalness,
-        roughness: debugObject.roughness,
-    }));
-    let PuzzlePiece_02 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
-        color: Colors[1],
-        metalness: debugObject.metalness,
-        roughness: debugObject.roughness,
-    }));
-    let PuzzlePiece_03 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
-        color: Colors[2],
-        metalness: debugObject.metalness,
-        roughness: debugObject.roughness,
-    }));
-    let PuzzlePiece_04 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
-        color: Colors[3],
-        metalness: debugObject.metalness,
-        roughness: debugObject.roughness,
-    }));
-    let PuzzlePiece_05 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
-        color: Colors[4],
-        metalness: debugObject.metalness,
-        roughness: debugObject.roughness,
-    }));
-    let PuzzlePiece_06 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
-        color: Colors[5],
-        metalness: debugObject.metalness,
-        roughness: debugObject.roughness,
-    }));
+    const defaultSphere = new THREE.SphereGeometry(0.5, 16, 16);
 
+    let PuzzlePiece_01 = new THREE.Mesh(defaultSphere, Material_01);
+    let PuzzlePiece_02 = new THREE.Mesh(defaultSphere, Material_02);
+    let PuzzlePiece_03 = new THREE.Mesh(defaultSphere, Material_03);
+    let PuzzlePiece_04 = new THREE.Mesh(defaultSphere, Material_04);
+    let PuzzlePiece_05 = new THREE.Mesh(defaultSphere, Material_05);
+    let PuzzlePiece_06 = new THREE.Mesh(defaultSphere, Material_06);
+    
     let PuzzlePieces = [PuzzlePiece_01, PuzzlePiece_02, PuzzlePiece_03, PuzzlePiece_04, PuzzlePiece_05, PuzzlePiece_06];
 
     const PositionMoveRight = 3.396413;
@@ -450,7 +462,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
     const framesObject = {
-        maxTickRate: 61,
+        maxTickRate: 62,
     }
     
     gui.add( framesObject, 'maxTickRate' ).min( 1 ).max( 120 ).step(10);
@@ -501,16 +513,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
     gui.add( AnimParams, 'SelectTime' ).min( 0.05 ).max( 6 ).step(0.01);
 
-
+    let FrameTimes = []
+    function optimize(frameTime){
+        if(isNaN(frameTime)){return}
+        if(FrameTimes.length > 10)
+        {
+            
+        }
+        else{
+            FrameTimes.push(frameTime)
+        }
+        // console.l]og(FrameTimes)
+        const average = FrameTimes.reduce((acc, c) => acc + c, 0) / FrameTimes.length;
+        console.log(average)
+        
+        // if(frameRate >= 50)
+        // {
+        //     framesObject.maxTickRate = Math.round((frameCount / frameRate) * 5000)
+        //     console.log(framesObject.maxTickRate)
+        // }
+    }
 
     function tick(currentTime) {
+        stats.update()
         const deltaTime = currentTime - previousTime;
+        // optimize(deltaTime);
+
+        // TODO 
+        // Get Frame Rate 
+        // if Frames are less that x
         if (deltaTime < 1000 / framesObject.maxTickRate) {
             window.requestAnimationFrame(tick);
             return;
         }
         previousTime = currentTime;
-        stats.begin();
         // Handle raycasting for selection
         if (objectsToTest) {
             raycaster.setFromCamera(mouse, camera);
@@ -548,7 +584,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         render();
 
-        stats.end();
+
         // Request the next frame
         requestAnimationFrame(tick);
     }

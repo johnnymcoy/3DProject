@@ -101,7 +101,6 @@ renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.toneMapping = THREE.CineonToneMapping
 renderer.toneMappingExposure = 1;
 renderer.shadowMap.enabled = true;
-// renderer.shadowMap.type = THREE.PCFShadowMap
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
 gui.add(renderer, "toneMapping", {
     No: THREE.NoToneMapping,
@@ -123,12 +122,12 @@ const textureLoader = new THREE.TextureLoader(loadingManager);
 
 const cubeTextureLoader = new THREE.CubeTextureLoader()
 const environmentMapTexture = cubeTextureLoader.load([
-    'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0/px.jpg',
-    'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0/nx.jpg',
-    'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0/py.jpg',
-    'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0/ny.jpg',
-    'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0/pz.jpg',
-    'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0/nz.jpg'
+    'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0-1/px.jpg',
+    'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0-1/nx.jpg',
+    'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0-1/py.jpg',
+    'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0-1/ny.jpg',
+    'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0-1/pz.jpg',
+    'https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/textures/environmentMaps/0-1/nz.jpg'
 ])
 environmentMapTexture.minFilter = THREE.NearestFilter;
 environmentMapTexture.magFilter = THREE.NearestFilter;
@@ -177,40 +176,45 @@ const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath("/draco/");
 const gltfLoader = new GLTFLoader();
 gltfLoader.setDRACOLoader(dracoLoader);
-let PuzzlePiece_01 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
+
+const defaultSphere = new THREE.SphereGeometry(0.5, 16, 16);
+const Material_01 = new THREE.MeshStandardMaterial({
     color: Colors[0],
     metalness: debugObject.metalness,
     roughness: debugObject.roughness,
-}));
-let PuzzlePiece_02 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
+});
+const Material_02 = new THREE.MeshStandardMaterial({
     color: Colors[1],
     metalness: debugObject.metalness,
     roughness: debugObject.roughness,
-}));
-let PuzzlePiece_03 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
+})
+const Material_03 = new THREE.MeshStandardMaterial({
     color: Colors[2],
     metalness: debugObject.metalness,
     roughness: debugObject.roughness,
-
-}));
-let PuzzlePiece_04 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
+})
+const Material_04 = new THREE.MeshStandardMaterial({
     color: Colors[3],
     metalness: debugObject.metalness,
     roughness: debugObject.roughness,
-
-}));
-let PuzzlePiece_05 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
+})
+const Material_05 = new THREE.MeshStandardMaterial({
     color: Colors[4],
     metalness: debugObject.metalness,
     roughness: debugObject.roughness,
-
-}));
-let PuzzlePiece_06 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({
+})
+const Material_06 = new THREE.MeshStandardMaterial({
     color: Colors[5],
     metalness: debugObject.metalness,
     roughness: debugObject.roughness,
-}));
+})
 
+let PuzzlePiece_01 = new THREE.Mesh(defaultSphere, Material_01);
+let PuzzlePiece_02 = new THREE.Mesh(defaultSphere, Material_02);
+let PuzzlePiece_03 = new THREE.Mesh(defaultSphere, Material_03);
+let PuzzlePiece_04 = new THREE.Mesh(defaultSphere, Material_04);
+let PuzzlePiece_05 = new THREE.Mesh(defaultSphere, Material_05);
+let PuzzlePiece_06 = new THREE.Mesh(defaultSphere, Material_06);
 let PuzzlePieces = [PuzzlePiece_01, PuzzlePiece_02, PuzzlePiece_03, PuzzlePiece_04, PuzzlePiece_05, PuzzlePiece_06];
 
 const PositionMoveRight = 3.396413;
