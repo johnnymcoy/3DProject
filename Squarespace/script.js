@@ -7,6 +7,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     container.style.background = "none";
 
+    const links = [
+        "./workforce",
+        "./clients",
+        "./governance",
+        "./systems",
+        "./finance",
+        "./compliance",
+    ]
+
     // GUI Setup
     const gui = new lil.GUI({ title: "Menu", width: 250 });
     gui.hide();
@@ -64,7 +73,6 @@ document.addEventListener("DOMContentLoaded", function () {
         Agx: THREE.AgXToneMapping,
         neutral: THREE.NeutralToneMapping
     })
-    console.log(renderer.getPixelRatio());
 
     gui.add(renderer, "toneMappingExposure").min(0).max(10).step(0.001)
     container.appendChild(renderer.domElement);
@@ -93,7 +101,6 @@ document.addEventListener("DOMContentLoaded", function () {
     environmentMapTexture.minFilter = THREE.NearestFilter;
     environmentMapTexture.magFilter = THREE.NearestFilter;
     environmentMapTexture.generateMipmaps = true;
-
     environmentMapTexture.encoding = THREE.sRGBEncoding;
     scene.background = null; //environmentMapTexture
     scene.environment = environmentMapTexture;
@@ -174,7 +181,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const PositionMoveRight = 3.396413;
     const PositionMoveUp = 0.337502 * 6;
-
     const PositionTotalDown = -1.75;
     const PositionTotalLeft = 1.75;
 
@@ -201,7 +207,8 @@ document.addEventListener("DOMContentLoaded", function () {
             PuzzlePiece_04.position.set(-PositionMoveRight + PositionTotalLeft, 2 * PositionMoveUp + PositionTotalDown,0);
             PuzzlePiece_05.position.set(-PositionMoveRight + PositionTotalLeft,PositionTotalDown,0);
             PuzzlePiece_06.position.set(PositionTotalLeft, 2 * PositionMoveUp + PositionTotalDown, 0);
-
+            // Set Proper Index Values
+            PuzzlePieces = [PuzzlePiece_04, PuzzlePiece_06, PuzzlePiece_01, PuzzlePiece_03, PuzzlePiece_05, PuzzlePiece_02]
             let index = 0;
             for(const PuzzlePiece of PuzzlePieces)
             {
@@ -220,6 +227,141 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("Error",e )
         }
     );
+
+    /**
+     * Font
+     */
+
+    const fontLoader = new THREE.FontLoader();
+
+    fontLoader.load(
+        "https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/fonts/gentilis_bold.typeface.json",
+        createText
+    );
+    const fontParams = {
+        bevelSize : 0.01,
+        bevelThickness : 0.02,
+        size: 0.4,
+        depth: 0.2,
+        scale: 1.0,
+    }
+    let textMesh_01 = null;
+    let textMesh_02 = null;
+    let textMesh_03 = null;
+    let textMesh_04 = null;
+    let textMesh_05 = null;
+    let textMesh_06 = null;
+    let TextMeshes = [];
+    const TextForward = 0.4;
+    //Needs to be function, as its AFTER the font is loaded
+    function createText(font){
+        const textWorkforceGeometry = new THREE.TextGeometry(
+                "Workforce",
+                {
+                    font: font,
+                    size: fontParams.size,
+                    height: fontParams.depth,
+                    curveSegments: 4,
+                    bevelEnabled: true,
+                    bevelThickness: fontParams.bevelThickness,
+                    bevelSize: fontParams.bevelSize,
+                    bevelOffset: 0,
+                    bevelSegments: 2,
+                });
+        const textClientsGeometry =  new THREE.TextGeometry(
+                "Clients",
+                {
+                    font: font,
+                    size: fontParams.size,
+                    height: fontParams.depth,
+                    curveSegments: 4,
+                    bevelEnabled: true,
+                    bevelThickness: fontParams.bevelThickness,
+                    bevelSize: fontParams.bevelSize,
+                    bevelOffset: 0,
+                    bevelSegments: 2,
+                });
+            const textGovernanceGeometry =  new THREE.TextGeometry(
+                "Governance",
+                {
+                    font: font,
+                    size: fontParams.size,
+                    height: fontParams.depth,
+                    curveSegments: 4,
+                    bevelEnabled: true,
+                    bevelThickness: fontParams.bevelThickness,
+                    bevelSize: fontParams.bevelSize,
+                    bevelOffset: 0,
+                    bevelSegments: 2,
+                });
+            const textSystemsGeometry =  new THREE.TextGeometry(
+                "Systems",
+                {
+                    font: font,
+                    size: fontParams.size,
+                    height: fontParams.depth,
+                    curveSegments: 4,
+                    bevelEnabled: true,
+                    bevelThickness: fontParams.bevelThickness,
+                    bevelSize: fontParams.bevelSize,
+                    bevelOffset: 0,
+                    bevelSegments: 2,
+                });
+            const textFinanceGeometry =  new THREE.TextGeometry(
+                "Finance",
+                {
+                    font: font,
+                    size: fontParams.size,
+                    height: fontParams.depth,
+                    curveSegments: 4,
+                    bevelEnabled: true,
+                    bevelThickness: fontParams.bevelThickness,
+                    bevelSize: fontParams.bevelSize,
+                    bevelOffset: 0,
+                    bevelSegments: 2,
+                });
+            const textComplianceGeometry =  new THREE.TextGeometry(
+                "Compliance",
+                {
+                    font: font,
+                    size: fontParams.size,
+                    height: fontParams.depth,
+                    curveSegments: 4,
+                    bevelEnabled: true,
+                    bevelThickness: fontParams.bevelThickness,
+                    bevelSize: fontParams.bevelSize,
+                    bevelOffset: 0,
+                    bevelSegments: 2,
+                });
+        textWorkforceGeometry.center();
+        textClientsGeometry.center();
+        textGovernanceGeometry.center();
+        textSystemsGeometry.center();
+        textFinanceGeometry.center();
+        textComplianceGeometry.center();
+        textMesh_01 = new THREE.Mesh(textWorkforceGeometry, Material_04);
+        textMesh_02 = new THREE.Mesh(textClientsGeometry, Material_06);
+        textMesh_03 = new THREE.Mesh(textGovernanceGeometry, Material_01);
+        textMesh_04 = new THREE.Mesh(textSystemsGeometry, Material_03);
+        textMesh_05 = new THREE.Mesh(textFinanceGeometry, Material_05);
+        textMesh_06 = new THREE.Mesh(textComplianceGeometry, Material_02);
+
+        const TextRight = PositionMoveRight * 0.4;
+        const TextLeft = PositionMoveRight * -0.55;
+
+        const TextUp = PositionMoveUp * 1.15;
+        const TextDown = PositionMoveUp * 0.85;
+
+        textMesh_01.position.set(TextLeft - 0.15, TextUp, TextForward);
+        textMesh_02.position.set(TextRight + 0.15, TextUp, TextForward);
+        textMesh_03.position.set(TextLeft, 0.15, TextForward);
+        textMesh_04.position.set(TextRight + 0.45, 0.15, TextForward);
+        textMesh_05.position.set(TextLeft - 0.2, -TextDown + 0.2, TextForward);
+        textMesh_06.position.set(TextRight + 0.35, -TextDown -0.1, TextForward);
+        TextMeshes = [textMesh_01, textMesh_02, textMesh_03, textMesh_04, textMesh_05, textMesh_06]
+        scene.add(textMesh_01, textMesh_02, textMesh_03, textMesh_04, textMesh_05, textMesh_06);
+    }
+
 
     /**
      * Helpers
@@ -287,7 +429,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
     camera.position.copy(CameraParams.startLocation)
-    camera.fov = 45
+    camera.fov = 32.5
 
     scene.add(camera)
 
@@ -337,21 +479,25 @@ document.addEventListener("DOMContentLoaded", function () {
             {
                 // currentIntersect.object.layers.toggle(BLOOM_SCENE);
                 // render();
-            //     console.log(objectsToTest.findIndex((item) => item === currentIntersect.object))
-            //     bSelectedItem = !bSelectedItem;
-            //     if(bSelectedItem)
-            //     {
-            //         camera.position.set(currentIntersect.object.position.x, currentIntersect.object.position.y, 5);
-            //     }
-            //     else
-            //     {
-            //         camera.position.copy(CameraParams.startLocation)
-            //     }
-            // }
-            // else
-            // {
-            //     bSelectedItem = false;
-            //     camera.position.copy(CameraParams.startLocation)
+                const index = (PuzzlePieces.findIndex((item) => item === currentIntersect.object))
+                bSelectedItem = !bSelectedItem;
+                const Message = `"Travel To" ${links[index]}`
+                console.log(Message);
+                // alert(Message);
+                // window.location.href = links[index];
+                // if(bSelectedItem)
+                // {
+                //     camera.position.set(currentIntersect.object.position.x, currentIntersect.object.position.y, 5);
+                // }
+                // else
+                // {
+                //     camera.position.copy(CameraParams.startLocation)
+                // }
+            }
+            else
+            {
+                bSelectedItem = false;
+                // camera.position.copy(CameraParams.startLocation)
             }
         }
     )
@@ -470,23 +616,67 @@ document.addEventListener("DOMContentLoaded", function () {
     
     const raycaster = new THREE.Raycaster();
 
+    const easeTypes = [
+        "power1.in",
+        "power1.out",
+        "power1.inOut",
+        "power2.in",
+        "power2.out",
+        "power2.inOut",
+        "power3.in",
+        "power3.out",
+        "power3.inOut",
+        "power4.in",
+        "power4.out",
+        "power4.inOut",
+        "back.in",
+        "back.out",
+        "back.inOut",
+    ]
     const AnimParams = {
         SelectTime : 0.35,
-        zOffset: 2
+        zOffset: 1,
+        FontZOffset: 1.5,
+        easeInType: easeTypes[4],
+        easeOutType: easeTypes[10]
+
+
     }
+    gui.add( AnimParams, 'easeInType', easeTypes).name("Ease In");;
+    gui.add( AnimParams, 'easeOutType', easeTypes).name("Ease Out");;
 
     function handleSelect(object) {
-        // console.log("Object selected:", object);
         gsap.killTweensOf(object.position);
+        const index = PuzzlePieces.findIndex(item => item === object);
+        if(TextMeshes[index] !== undefined)
+        {
+            gsap.killTweensOf(TextMeshes[index].position);
+            gsap.to(TextMeshes[index].position, {
+                duration: AnimParams.SelectTime,
+                ease: AnimParams.easeInType,
+                z: AnimParams.FontZOffset 
+            });
+            gsap.to(TextMeshes[index].scale, {
+                duration: AnimParams.SelectTime,
+                ease: AnimParams.easeInType,
+                x: fontParams.scale * 1.25,
+                y: fontParams.scale * 1.25,
+                z: fontParams.scale * 1.25
+            });
+        }
+        for(const PuzzlePiece of PuzzlePieces)
+        {
+            PuzzlePiece.layers.disable(BLOOM_SCENE)
+        }
         object.layers.enable(BLOOM_SCENE);
         gsap.to(object.position, {
             duration: AnimParams.SelectTime,
-            ease: "power2.inOut",
+            ease: AnimParams.easeInType,
             z: AnimParams.zOffset
         });
         gsap.to(object.scale, {
             duration: AnimParams.SelectTime,
-            ease: "power2.inOut",
+            ease: AnimParams.easeInType,
             x: PuzzleScale * 1.25,
             y: PuzzleScale * 1.25,
             z: PuzzleScale * 1.25
@@ -494,18 +684,33 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     // Function called when an object is deselected
     function handleDeselect(object) {
-        // console.log("Object deselected:", object);
         gsap.killTweensOf(object.position);
-        object.layers.disable(BLOOM_SCENE);
-
+        const index = PuzzlePieces.findIndex(item => item === object);
+        if(TextMeshes[index] !== undefined)
+        {
+            gsap.killTweensOf(TextMeshes[index].position);
+            gsap.to(TextMeshes[index].position, {
+                duration: AnimParams.SelectTime,
+                ease: AnimParams.easeOutType,
+                z: TextForward 
+            });
+            gsap.to(TextMeshes[index].scale, {
+                duration: AnimParams.SelectTime,
+                ease: AnimParams.easeOutType,
+                x: fontParams.scale,
+                y: fontParams.scale,
+                z: fontParams.scale
+            });
+        }    
+        object.layers.enable(BLOOM_SCENE);
         gsap.to(object.position, {
             duration: AnimParams.SelectTime,
-            ease: "power2.inOut",
+            ease: AnimParams.easeOutType,
             z: "0"
         });
         gsap.to(object.scale, {
             duration: AnimParams.SelectTime,
-            ease: "power2.inOut",
+            ease: AnimParams.easeOutType,
             x: PuzzleScale,
             y: PuzzleScale,
             z: PuzzleScale
@@ -520,6 +725,9 @@ document.addEventListener("DOMContentLoaded", function () {
     
     gui.add( framesObject, 'maxTickRate' ).min( 1 ).max( 61 ).step(10);
 
+    // TODO 
+    // Remove Shadows
+    // Remove Lights
     // let FrameTimes = []
     function optimize(frameTime){
         // if(isNaN(frameTime)){return}
@@ -545,14 +753,23 @@ document.addEventListener("DOMContentLoaded", function () {
         // // }
     }
 
+    function HightlightAllPieces(){
+        for(const PuzzlePiece of PuzzlePieces)
+        {
+            PuzzlePiece.layers.enable(BLOOM_SCENE)
+        }
+    }
+
+
+    function init(){
+        HightlightAllPieces();
+    }
+
     function tick(currentTime) {
         stats.update()
         const deltaTime = currentTime - previousTime;
         optimize(deltaTime);
 
-        // TODO 
-        // Get Frame Rate 
-        // if Frames are less that x
         if (deltaTime < 1000 / framesObject.maxTickRate) {
             window.requestAnimationFrame(tick);
             return;
@@ -578,6 +795,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Handle deselecting when no object is intersected
                 handleDeselect(currentIntersect.object);
                 currentIntersect = null;
+                HightlightAllPieces();
             }
         }
         // Animate camera if required
@@ -597,5 +815,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Request the next frame
         requestAnimationFrame(tick);
     }
+
+    init();
     tick();
 });

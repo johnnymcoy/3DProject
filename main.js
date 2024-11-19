@@ -253,7 +253,8 @@ gltfLoader.load(
         PuzzlePiece_04.position.set(-PositionMoveRight + PositionTotalLeft, 2 * PositionMoveUp + PositionTotalDown,0);
         PuzzlePiece_05.position.set(-PositionMoveRight + PositionTotalLeft,PositionTotalDown,0);
         PuzzlePiece_06.position.set(PositionTotalLeft, 2 * PositionMoveUp + PositionTotalDown, 0);
-
+        // Set Proper Index Values
+        PuzzlePieces = [PuzzlePiece_04, PuzzlePiece_06, PuzzlePiece_01, PuzzlePiece_03, PuzzlePiece_05, PuzzlePiece_02]
         let index = 0;
         for(const PuzzlePiece of PuzzlePieces)
         {
@@ -278,40 +279,146 @@ gltfLoader.load(
 const fontLoader = new FontLoader();
 
 fontLoader.load(
-    "https://raw.githubusercontent.com/jonathantneal/google-fonts-complete/master/google-fonts.json",
+    "https://raw.githubusercontent.com/johnnymcoy/3DProject/refs/heads/main/static/fonts/gentilis_bold.typeface.json",
     createText
 );
 
+const fontParams = {
+    bevelSize : 0.01,
+    bevelThickness : 0.02,
+    size: 0.4,
+    depth: 0.2,
+}
+
+
+let textMesh_01 = null;
+let textMesh_02 = null;
+let textMesh_03 = null;
+let textMesh_04 = null;
+let textMesh_05 = null;
+let textMesh_06 = null;
+let TextMeshes = [];
+const TextForward = 0.4;
+
 //Needs to be function, as its AFTER the font is loaded
 function createText(font){
-    const bevelSize = 0.03;
-    const bevelThickness = 0.02;
-    console.log("font Loaded");
-    const textGeometry = new TextGeometry(
-            "Participants",
+    const textWorkforceGeometry = new TextGeometry(
+            "Workforce",
             {
                 font: font,
-                size: 0.5,
-                height: 0.2,
+                size: fontParams.size,
+                depth: fontParams.depth,
                 curveSegments: 4,
                 bevelEnabled: true,
-                bevelThickness: bevelThickness,
-                bevelSize: bevelSize,
+                bevelThickness: fontParams.bevelThickness,
+                bevelSize: fontParams.bevelSize,
                 bevelOffset: 0,
                 bevelSegments: 2,
             });
+    const textClientsGeometry =  new TextGeometry(
+            "Clients",
+            {
+                font: font,
+                size: fontParams.size,
+                depth: fontParams.depth,
+                curveSegments: 4,
+                bevelEnabled: true,
+                bevelThickness: fontParams.bevelThickness,
+                bevelSize: fontParams.bevelSize,
+                bevelOffset: 0,
+                bevelSegments: 2,
+            });
+        const textGovernanceGeometry =  new TextGeometry(
+            "Governance",
+            {
+                font: font,
+                size: fontParams.size,
+                depth: fontParams.depth,
+                curveSegments: 4,
+                bevelEnabled: true,
+                bevelThickness: fontParams.bevelThickness,
+                bevelSize: fontParams.bevelSize,
+                bevelOffset: 0,
+                bevelSegments: 2,
+            });
+        const textSystemsGeometry =  new TextGeometry(
+            "Systems",
+            {
+                font: font,
+                size: fontParams.size,
+                depth: fontParams.depth,
+                curveSegments: 4,
+                bevelEnabled: true,
+                bevelThickness: fontParams.bevelThickness,
+                bevelSize: fontParams.bevelSize,
+                bevelOffset: 0,
+                bevelSegments: 2,
+            });
+        const textFinanceGeometry =  new TextGeometry(
+            "Finance",
+            {
+                font: font,
+                size: fontParams.size,
+                depth: fontParams.depth,
+                curveSegments: 4,
+                bevelEnabled: true,
+                bevelThickness: fontParams.bevelThickness,
+                bevelSize: fontParams.bevelSize,
+                bevelOffset: 0,
+                bevelSegments: 2,
+            });
+        const textComplianceGeometry =  new TextGeometry(
+            "Compliance",
+            {
+                font: font,
+                size: fontParams.size,
+                depth: fontParams.depth,
+                curveSegments: 4,
+                bevelEnabled: true,
+                bevelThickness: fontParams.bevelThickness,
+                bevelSize: fontParams.bevelSize,
+                bevelOffset: 0,
+                bevelSegments: 2,
+            });
+    TextGeometries.push(textWorkforceGeometry, textClientsGeometry, textGovernanceGeometry, textSystemsGeometry, textFinanceGeometry, textComplianceGeometry);                              
+    console.log(textWorkforceGeometry)
+    for(const singleText of TextGeometries)
+    {
+        singleText.center();
     
+    }
+
     // textGeometry.computeBoundingBox();
     // textGeometry.translate(
     //     - (textGeometry.boundingBox.max.x - bevelThickness) * 0.5,
     //     - (textGeometry.boundingBox.max.y - bevelThickness) * 0.5,
     //     - (textGeometry.boundingBox.max.z - bevelSize) * 0.5,
     // );
-    textGeometry.center();
-    const textMaterial = Material_01;
-    const text = new THREE.Mesh(textGeometry, textMaterial);
-    scene.add(text);
+    textMesh_01 = new THREE.Mesh(textWorkforceGeometry, Material_04);
+    textMesh_02 = new THREE.Mesh(textClientsGeometry, Material_06);
+    textMesh_03 = new THREE.Mesh(textGovernanceGeometry, Material_01);
+    textMesh_04 = new THREE.Mesh(textSystemsGeometry, Material_03);
+    textMesh_05 = new THREE.Mesh(textFinanceGeometry, Material_05);
+    textMesh_06 = new THREE.Mesh(textComplianceGeometry, Material_02);
 
+    const TextRight = PositionMoveRight * 0.4;
+    const TextLeft = PositionMoveRight * -0.55;
+
+    const TextUp = PositionMoveUp * 1.15;
+    const TextDown = PositionMoveUp * 0.85;
+
+    textMesh_01.position.set(TextLeft - 0.15, TextUp, TextForward);
+    textMesh_02.position.set(TextRight + 0.15, TextUp, TextForward);
+    textMesh_03.position.set(TextLeft, 0.15, TextForward);
+    textMesh_04.position.set(TextRight + 0.45, 0.15, TextForward);
+    textMesh_05.position.set(TextLeft - 0.2, -TextDown + 0.2, TextForward);
+    textMesh_06.position.set(TextRight + 0.35, -TextDown -0.1, TextForward);
+    TextMeshes = [textMesh_01, textMesh_02, textMesh_03, textMesh_04, textMesh_05, textMesh_06]
+    scene.add(textMesh_01, textMesh_02, textMesh_03, textMesh_04, textMesh_05, textMesh_06);
+
+    // Mesh_Group_01.add(PuzzlePiece_01);
+    // Mesh_Group_01.add(textMesh_01);
+    // scene.add(Mesh_Group_01);
 }
 
 
@@ -371,7 +478,7 @@ hemiLight.position.set( 0, 50, 0 );
 scene.add( hemiLight );
 
 const hemiLightHelper = new THREE.HemisphereLightHelper( hemiLight, 10 );
-scene.add( hemiLightHelper );
+// scene.add( hemiLightHelper );
 
 
 
@@ -527,16 +634,6 @@ window.addEventListener("click", (event)=>
 
 
 
-/**
- * Animate
- */
-const clock = new THREE.Clock()
-let previousTime = 0
-
-const objectsToTest = PuzzlePieces;
-let currentIntersect = null;
-
-
 // Post
 
 const composer = new EffectComposer( renderer );
@@ -659,21 +756,46 @@ function IsSelected(Obj){
     return false;
 }
 
+/**
+ * Animate
+ */
+const clock = new THREE.Clock()
+let previousTime = 0
+
+// const Mesh_Group_01 = new THREE.Group()
+
+// const MeshGroups = [Mesh_Group_01]
+const objectsToTest = PuzzlePieces;
+// const groupsToTest = MeshGroups;
+
+let currentIntersect = null;
+
 
 //
 // Raycaster
 // 
-
 const raycaster = new THREE.Raycaster();
 
 const AnimParams = {
     SelectTime : 0.35,
-    zOffset: 2
+    zOffset: 2,
+    FontZOffset: 2.5
 }
 
+
 function handleSelect(object) {
-    console.log("Object selected:", object);
+    // console.log("Object selected:", object);
     gsap.killTweensOf(object.position);
+    const index = PuzzlePieces.findIndex(item => item === object);
+    if(TextMeshes[index] !== undefined)
+    {
+        gsap.killTweensOf(TextMeshes[index].position);
+        gsap.to(TextMeshes[index].position, {
+            duration: AnimParams.SelectTime,
+            ease: "power2.inOut",
+            z: AnimParams.FontZOffset 
+        });
+    }
     object.layers.enable(BLOOM_SCENE);
     gsap.to(object.position, {
         duration: AnimParams.SelectTime,
@@ -691,10 +813,18 @@ function handleSelect(object) {
 
 // Function called when an object is deselected
 function handleDeselect(object) {
-    console.log("Object deselected:", object);
     gsap.killTweensOf(object.position);
     object.layers.disable(BLOOM_SCENE);
-
+    const index = PuzzlePieces.findIndex(item => item === object);
+    if(TextMeshes[index] !== undefined)
+    {
+        gsap.killTweensOf(TextMeshes[index].position);
+        gsap.to(TextMeshes[index].position, {
+            duration: AnimParams.SelectTime,
+            ease: "power2.inOut",
+            z: TextForward 
+        });
+    }    
     gsap.to(object.position, {
         duration: AnimParams.SelectTime,
         ease: "power2.inOut",
@@ -746,15 +876,6 @@ const tick = (currentTime) => {
         }
     }
 
-    // Update layers for bloom effect on puzzle pieces
-    // PuzzlePieces.forEach((piece) => {
-    //     if (IsSelected(piece)) {
-    //         piece.layers.enable(BLOOM_SCENE);
-    //     } else {
-    //         piece.layers.disable(BLOOM_SCENE);
-    //     }
-    // });
-
     // Animate camera if required
     if (CameraParams.bAnimate) {
         const elapsedTime = clock.getElapsedTime(); // Ensure elapsedTime is calculated here
@@ -765,7 +886,6 @@ const tick = (currentTime) => {
     // Update camera and light helpers
     camera.updateProjectionMatrix();
     directionalLightCameraHelper.update();
-    // pointLightHelper.update();
 
     // Update controls
     controls.update();
