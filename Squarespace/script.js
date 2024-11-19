@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const PositionMoveRight = 3.396413;
     const PositionMoveUp = 0.337502 * 6;
-    const PositionTotalDown = -1.75;
+    const PositionTotalDown = -2.25;
     const PositionTotalLeft = 1.75;
 
 
@@ -352,12 +352,15 @@ document.addEventListener("DOMContentLoaded", function () {
         const TextUp = PositionMoveUp * 1.15;
         const TextDown = PositionMoveUp * 0.85;
 
-        textMesh_01.position.set(TextLeft - 0.15, TextUp, TextForward);
-        textMesh_02.position.set(TextRight + 0.15, TextUp, TextForward);
-        textMesh_03.position.set(TextLeft, 0.15, TextForward);
-        textMesh_04.position.set(TextRight + 0.45, 0.15, TextForward);
-        textMesh_05.position.set(TextLeft - 0.2, -TextDown + 0.2, TextForward);
-        textMesh_06.position.set(TextRight + 0.35, -TextDown -0.1, TextForward);
+        const OverallUp = -0.5;
+    
+
+        textMesh_01.position.set(TextLeft - 0.15, TextUp + OverallUp, TextForward);
+        textMesh_02.position.set(TextRight + 0.15, TextUp + OverallUp, TextForward);
+        textMesh_03.position.set(TextLeft, 0.15 + OverallUp, TextForward);
+        textMesh_04.position.set(TextRight + 0.45, 0.15 + OverallUp, TextForward);
+        textMesh_05.position.set(TextLeft - 0.2, -TextDown + 0.2 + OverallUp, TextForward);
+        textMesh_06.position.set(TextRight + 0.35, -TextDown -0.1 + OverallUp, TextForward);
         TextMeshes = [textMesh_01, textMesh_02, textMesh_03, textMesh_04, textMesh_05, textMesh_06]
         scene.add(textMesh_01, textMesh_02, textMesh_03, textMesh_04, textMesh_05, textMesh_06);
     }
@@ -424,7 +427,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let CameraParams = {
         bAnimate: false,
-        startLocation: new THREE.Vector3(0, 0, 20),
+        startLocation: new THREE.Vector3(0, 0, 16),
     };
 
     const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
@@ -442,10 +445,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // Orbit Controls
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.target.set(0, 0.75, 0)
-    controls.enableDamping = true;
-    guiCameraFolder.add(controls, "enabled");
+    // const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    // controls.target.set(0, 0.75, 0)
+    // controls.enableDamping = true;
+    // guiCameraFolder.add(controls, "enabled");
 
     /**
      * Mouse
@@ -646,6 +649,7 @@ document.addEventListener("DOMContentLoaded", function () {
     gui.add( AnimParams, 'easeOutType', easeTypes).name("Ease Out");;
 
     function handleSelect(object) {
+        document.body.style.cursor = "pointer";
         gsap.killTweensOf(object.position);
         const index = PuzzlePieces.findIndex(item => item === object);
         if(TextMeshes[index] !== undefined)
@@ -796,6 +800,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 handleDeselect(currentIntersect.object);
                 currentIntersect = null;
                 HightlightAllPieces();
+                document.body.style.cursor = "default";
             }
         }
         // Animate camera if required
@@ -809,7 +814,7 @@ document.addEventListener("DOMContentLoaded", function () {
         directionalLightCameraHelper.update();
 
         // Update Controls
-        controls.update();
+        // controls.update();
 
         render();
         // Request the next frame

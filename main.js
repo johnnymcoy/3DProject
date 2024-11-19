@@ -380,13 +380,6 @@ function createText(font){
                 bevelOffset: 0,
                 bevelSegments: 2,
             });
-    TextGeometries.push(textWorkforceGeometry, textClientsGeometry, textGovernanceGeometry, textSystemsGeometry, textFinanceGeometry, textComplianceGeometry);                              
-    console.log(textWorkforceGeometry)
-    for(const singleText of TextGeometries)
-    {
-        singleText.center();
-    
-    }
 
     // textGeometry.computeBoundingBox();
     // textGeometry.translate(
