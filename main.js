@@ -17,6 +17,13 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 
+
+import {TextGeometry} from "three/examples/jsm/geometries/TextGeometry"
+import {FontLoader} from "three/examples/jsm/loaders/FontLoader"
+
+
+
+
 /**
  * Debug
  */
@@ -85,7 +92,7 @@ window.addEventListener('resize', () =>
 
     // Update renderer
     renderer.setSize(sizes.width, sizes.height)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 500))
 })
 
 /**
@@ -95,7 +102,7 @@ const renderer = new THREE.WebGLRenderer({
     canvas: canvas, alpha: true
 })
 renderer.setSize(sizes.width, sizes.height)
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 10))
 renderer.physicallyCorrectLights = true;
 renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.toneMapping = THREE.CineonToneMapping
@@ -265,6 +272,48 @@ gltfLoader.load(
         console.log("Error",e )
     }
 );
+
+
+
+const fontLoader = new FontLoader();
+
+fontLoader.load(
+    "https://raw.githubusercontent.com/jonathantneal/google-fonts-complete/master/google-fonts.json",
+    createText
+);
+
+//Needs to be function, as its AFTER the font is loaded
+function createText(font){
+    const bevelSize = 0.03;
+    const bevelThickness = 0.02;
+    console.log("font Loaded");
+    const textGeometry = new TextGeometry(
+            "Participants",
+            {
+                font: font,
+                size: 0.5,
+                height: 0.2,
+                curveSegments: 4,
+                bevelEnabled: true,
+                bevelThickness: bevelThickness,
+                bevelSize: bevelSize,
+                bevelOffset: 0,
+                bevelSegments: 2,
+            });
+    
+    // textGeometry.computeBoundingBox();
+    // textGeometry.translate(
+    //     - (textGeometry.boundingBox.max.x - bevelThickness) * 0.5,
+    //     - (textGeometry.boundingBox.max.y - bevelThickness) * 0.5,
+    //     - (textGeometry.boundingBox.max.z - bevelSize) * 0.5,
+    // );
+    textGeometry.center();
+    const textMaterial = Material_01;
+    const text = new THREE.Mesh(textGeometry, textMaterial);
+    scene.add(text);
+
+}
+
 
 
 /**

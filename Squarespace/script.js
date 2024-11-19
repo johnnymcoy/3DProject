@@ -37,11 +37,15 @@ document.addEventListener("DOMContentLoaded", function () {
         camera.updateProjectionMatrix()
         // Update renderer
         renderer.setSize(sizes.width, sizes.height)
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        // Update Post Processing Passes
+        composer.setSize(sizes.width, sizes.height)
+        finalComposer.setSize(sizes.width, sizes.height);
+        bloomComposer.setSize(sizes.width, sizes.height)
     })
 
     // Set renderer size and append it to the container
-    const renderer = new THREE.WebGLRenderer({alpha: true});
+    const renderer = new THREE.WebGLRenderer({alpha: true, antialiasing: true});
     renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     // renderer.setSize(container.clientWidth, container.clientHeight);    
@@ -60,6 +64,8 @@ document.addEventListener("DOMContentLoaded", function () {
         Agx: THREE.AgXToneMapping,
         neutral: THREE.NeutralToneMapping
     })
+    console.log(renderer.getPixelRatio());
+
     gui.add(renderer, "toneMappingExposure").min(0).max(10).step(0.001)
     container.appendChild(renderer.domElement);
 
@@ -461,11 +467,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
     
-    const framesObject = {
-        maxTickRate: 62,
-    }
-    
-    gui.add( framesObject, 'maxTickRate' ).min( 1 ).max( 120 ).step(10);
     
     const raycaster = new THREE.Raycaster();
 
@@ -513,31 +514,41 @@ document.addEventListener("DOMContentLoaded", function () {
 
     gui.add( AnimParams, 'SelectTime' ).min( 0.05 ).max( 6 ).step(0.01);
 
-    let FrameTimes = []
+    const framesObject = {
+        maxTickRate: 61,
+    }
+    
+    gui.add( framesObject, 'maxTickRate' ).min( 1 ).max( 61 ).step(10);
+
+    // let FrameTimes = []
     function optimize(frameTime){
-        if(isNaN(frameTime)){return}
-        if(FrameTimes.length > 10)
-        {
-            
-        }
-        else{
-            FrameTimes.push(frameTime)
-        }
-        // console.l]og(FrameTimes)
-        const average = FrameTimes.reduce((acc, c) => acc + c, 0) / FrameTimes.length;
-        console.log(average)
-        
-        // if(frameRate >= 50)
+        // if(isNaN(frameTime)){return}
+        // FrameTimes.push(frameTime)
+        // if(FrameTimes.length > 10)
         // {
-        //     framesObject.maxTickRate = Math.round((frameCount / frameRate) * 5000)
-        //     console.log(framesObject.maxTickRate)
+        //     FrameTimes.shift();
         // }
+        // else{
+        // }
+        // // console.l]og(FrameTimes)
+        // const average = FrameTimes.reduce((acc, c) => acc + c, 0) / FrameTimes.length;
+        // // console.log(FrameTimes)
+    
+        // // if(average >= 20)
+        // // {
+        // //     directionalLight.visible = false;
+        // //     console.log("HI")
+        // // }
+        // // else
+        // // {
+        // //     directionalLight.visible = true;
+        // // }
     }
 
     function tick(currentTime) {
         stats.update()
         const deltaTime = currentTime - previousTime;
-        // optimize(deltaTime);
+        optimize(deltaTime);
 
         // TODO 
         // Get Frame Rate 
@@ -583,8 +594,6 @@ document.addEventListener("DOMContentLoaded", function () {
         controls.update();
 
         render();
-
-
         // Request the next frame
         requestAnimationFrame(tick);
     }

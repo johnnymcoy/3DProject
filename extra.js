@@ -213,42 +213,42 @@ scene.add( ground );
 
 
 
-// import {TextGeometry} from "three/examples/jsm/geometries/TextGeometry"
+import {TextGeometry} from "three/examples/jsm/geometries/TextGeometry"
 
-// import {FontLoader} from "three/examples/jsm/loaders/FontLoader"
-// const fontLoader = new FontLoader();
+import {FontLoader} from "three/examples/jsm/loaders/FontLoader"
+const fontLoader = new FontLoader();
 
-// fontLoader.load(
-//     "/fonts/helvetiker_regular.typeface.json",
-//     createText
-// );
+fontLoader.load(
+    "/fonts/helvetiker_regular.typeface.json",
+    createText
+);
 
-// //Needs to be function, as its AFTER the font is loaded
-// function createText(font){
-//     const bevelSize = 0.03;
-//     const bevelThickness = 0.02;
-//     console.log("font Loaded");
-//     const textGeometry = new TextGeometry(
-//             "Portfolio",
-//             {
-//                 font: font,
-//                 size: 0.5,
-//                 height: 0.2,
-//                 curveSegments: 4,
-//                 bevelEnabled: true,
-//                 bevelThickness: bevelThickness,
-//                 bevelSize: bevelSize,
-//                 bevelOffset: 0,
-//                 bevelSegments: 2,
-//             }
-//         );
-//     // textGeometry.computeBoundingBox();
-//     // textGeometry.translate(
-//     //     - (textGeometry.boundingBox.max.x - bevelThickness) * 0.5,
-//     //     - (textGeometry.boundingBox.max.y - bevelThickness) * 0.5,
-//     //     - (textGeometry.boundingBox.max.z - bevelSize) * 0.5,
-//     // );
-//     textGeometry.center();
+//Needs to be function, as its AFTER the font is loaded
+function createText(font){
+    const bevelSize = 0.03;
+    const bevelThickness = 0.02;
+    console.log("font Loaded");
+    const textGeometry = new TextGeometry(
+            "Portfolio",
+            {
+                font: font,
+                size: 0.5,
+                height: 0.2,
+                curveSegments: 4,
+                bevelEnabled: true,
+                bevelThickness: bevelThickness,
+                bevelSize: bevelSize,
+                bevelOffset: 0,
+                bevelSegments: 2,
+            }
+        );
+    // textGeometry.computeBoundingBox();
+    // textGeometry.translate(
+    //     - (textGeometry.boundingBox.max.x - bevelThickness) * 0.5,
+    //     - (textGeometry.boundingBox.max.y - bevelThickness) * 0.5,
+    //     - (textGeometry.boundingBox.max.z - bevelSize) * 0.5,
+    // );
+    textGeometry.center();
 
 //     // const textMaterial = new THREE.MeshBasicMaterial({color: 0xff00ff, wireframe: true});
 //     // guiText.add(textMaterial, "wireframe").name("wireframe")
