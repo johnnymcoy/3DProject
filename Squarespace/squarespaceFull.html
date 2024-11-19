@@ -67,9 +67,6 @@
             "./finance",
             "./compliance",
         ]
-
-
-    
         // GUI Setup
         const gui = new lil.GUI({ title: "Menu", width: 250 });
         gui.hide();
@@ -86,9 +83,48 @@
             width: window.innerWidth,
             height: window.innerHeight
         }
+        const loading = {
+            bPuzzleLoaded: false,
+            bFontsLoaded: false,
+            Complete: () => {return this.bPuzzleLoaded && this.bFontsLoaded;}
+        }
+        const Optimization = {
+            level: 3,
+            bValuesSet: false,
+            SetLevel: (newLevel) => { this.level = newLevel;updateAllMaterials(); this.bValuesSet = false;}
+        }
+        // 0 - none, 
+        // 1 - reduced lighting, 
+        // 2 - no SSAO, 
+        // 3 - ?
+        //<!-- TODO add this to beginning and adjust font mesh based on result, & Others -->
+        //<!-- TODO Also wait till Loading of Meshes complete, and loading of Fonts is complete, then start ticking? -->
+        console.log(window.navigator.hardwareConcurrency)
+        if (window.navigator.hardwareConcurrency < 4) {
+            Optimization.SetLevel(1);
+            if (window.navigator.hardwareConcurrency < 2)
+            {
+                Optimization.SetLevel(2);
+            }
+            //renderer.shadowMap.enabled = false; // Disable shadows
+           // ssaoPass.enabled = false;
+            //bloomPass.enabled = false;
+        }
+        gui.add(Optimization, "level").min(0).max(3).step(1).onChange((value) => {Optimization.SetLevel(value);Optimization.bValuesSet = false;})
+
         const stats = new Stats();
         stats.showPanel(0);
         document.body.appendChild( stats.dom );
+
+        function PixelRatio(){
+            switch(Optimization.level)
+            {
+                case 0: return 2;
+                case 1: return 1.5;
+                case 2: return 1.5;
+                case 3: return 1.0;
+            }
+        }
     
         window.addEventListener('resize', () =>
         {
@@ -100,8 +136,14 @@
             camera.updateProjectionMatrix();
             // Update renderer
             renderer.setSize(sizes.width, sizes.height);
-            //renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); 
+            if(Optimization.level > 1)
+            {
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); 
+            }
+            else
+            {
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            }
             // Update Post Processing Passes
             composer.setSize(sizes.width, sizes.height);
             finalComposer.setSize(sizes.width, sizes.height);
@@ -111,8 +153,14 @@
         // Set renderer size and append it to the container
         const renderer = new THREE.WebGLRenderer({alpha: true, antialiasing: true});
         renderer.setSize(sizes.width, sizes.height)
-        //renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); 
+        if(Optimization.level > 1)
+        {
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); 
+        }
+        else
+        {
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        }
         renderer.physicallyCorrectLights = true;
         renderer.outputEncoding = THREE.sRGBEncoding;
         renderer.toneMapping = THREE.CineonToneMapping
@@ -170,8 +218,14 @@
                 if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
                     child.material.envMap = environmentMapTexture;
                     child.material.envMapIntensity = debugObject.envMapIntensity;
-                    child.castShadow = true;
-                    child.receiveShadow = true;
+                    if(Optimization.level < 3)
+                    {
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+                    }else{
+                        child.castShadow = false;
+                        child.receiveShadow = false;
+                    }
                     child.material.metalness = debugObject.metalness;
                     child.material.roughness = debugObject.roughness;
                 }
@@ -215,8 +269,8 @@
         })
     
         /**
-            * Models
-            */
+        * Models
+        */
         const dracoLoader = new THREE.DRACOLoader();
         dracoLoader.setDecoderPath("/draco/");
         const gltfLoader = new THREE.GLTFLoader();
@@ -229,14 +283,12 @@
         let PuzzlePiece_04 = new THREE.Mesh(defaultSphere, Material_04);
         let PuzzlePiece_05 = new THREE.Mesh(defaultSphere, Material_05);
         let PuzzlePiece_06 = new THREE.Mesh(defaultSphere, Material_06);
-        
         let PuzzlePieces = [PuzzlePiece_01, PuzzlePiece_02, PuzzlePiece_03, PuzzlePiece_04, PuzzlePiece_05, PuzzlePiece_06];
     
         const PositionMoveRight = 3.396413;
         const PositionMoveUp = 0.337502 * 6;
         const PositionTotalDown = -2.25;
         const PositionTotalLeft = 1.75;
-    
     
         const PuzzleScale = 30;
         const RotationX = Math.PI * 0.5;
@@ -271,9 +323,9 @@
                     scene.add(PuzzlePiece);
                 }
                 updateAllMaterials();
+                loading.bPuzzleLoaded = true;
             },
             () =>{
-                console.log("Loading..")
                 updateAllMaterials();
             },
             (e) =>{
@@ -300,8 +352,14 @@
         scale: 1.0,
         curveSegments: 4,
         bevelSegments: 2
-
     }
+
+    if(Optimization.level > 1)
+    {
+        fontParams.curveSegments = 2;
+        fontParams.bevelSegments = 1;
+    }
+
     let textMesh_01 = null;
     let textMesh_02 = null;
     let textMesh_03 = null;
@@ -312,84 +370,84 @@
     const TextForward = 0.4;
     //Needs to be function, as its AFTER the font is loaded
     function createText(font){
-            const textWorkforceGeometry = new THREE.TextGeometry(
-                    "Workforce",
-                    {
-                        font: font,
-                        size: fontParams.size,
-                        height: fontParams.depth,
-                        curveSegments: fontParams.curveSegments,
-                        bevelEnabled: true,
-                        bevelThickness: fontParams.bevelThickness,
-                        bevelSize: fontParams.bevelSize,
-                        bevelOffset: 0,
-                        bevelSegments: fontParams.bevelSegments,
-                    });
-            const textClientsGeometry =  new THREE.TextGeometry(
-                    "Clients",
-                    {
-                        font: font,
-                        size: fontParams.size,
-                        height: fontParams.depth,
-                        curveSegments: fontParams.curveSegments,
-                        bevelEnabled: true,
-                        bevelThickness: fontParams.bevelThickness,
-                        bevelSize: fontParams.bevelSize,
-                        bevelOffset: 0,
-                        bevelSegments: fontParams.bevelSegments,
-                    });
-                const textGovernanceGeometry =  new THREE.TextGeometry(
-                    "Governance",
-                    {
-                        font: font,
-                        size: fontParams.size,
-                        height: fontParams.depth,
-                        curveSegments: fontParams.curveSegments,
-                        bevelEnabled: true,
-                        bevelThickness: fontParams.bevelThickness,
-                        bevelSize: fontParams.bevelSize,
-                        bevelOffset: 0,
-                        bevelSegments: fontParams.bevelSegments,
-                    });
-                const textSystemsGeometry =  new THREE.TextGeometry(
-                    "Systems",
-                    {
-                        font: font,
-                        size: fontParams.size,
-                        height: fontParams.depth,
-                        curveSegments: fontParams.curveSegments,
-                        bevelEnabled: true,
-                        bevelThickness: fontParams.bevelThickness,
-                        bevelSize: fontParams.bevelSize,
-                        bevelOffset: 0,
-                        bevelSegments: fontParams.bevelSegments,
-                    });
-                const textFinanceGeometry =  new THREE.TextGeometry(
-                    "Finance",
-                    {
-                        font: font,
-                        size: fontParams.size,
-                        height: fontParams.depth,
-                        curveSegments: fontParams.curveSegments,
-                        bevelEnabled: true,
-                        bevelThickness: fontParams.bevelThickness,
-                        bevelSize: fontParams.bevelSize,
-                        bevelOffset: 0,
-                        bevelSegments: fontParams.bevelSegments,
-                    });
-                const textComplianceGeometry =  new THREE.TextGeometry(
-                    "Compliance",
-                    {
-                        font: font,
-                        size: fontParams.size,
-                        height: fontParams.depth,
-                        curveSegments: fontParams.curveSegments,
-                        bevelEnabled: true,
-                        bevelThickness: fontParams.bevelThickness,
-                        bevelSize: fontParams.bevelSize,
-                        bevelOffset: 0,
-                        bevelSegments: fontParams.bevelSegments,
-                    });
+        const textWorkforceGeometry = new THREE.TextGeometry(
+            "Workforce",
+            {
+                font: font,
+                size: fontParams.size,
+                height: fontParams.depth,
+                curveSegments: fontParams.curveSegments,
+                bevelEnabled: true,
+                bevelThickness: fontParams.bevelThickness,
+                bevelSize: fontParams.bevelSize,
+                bevelOffset: 0,
+                bevelSegments: fontParams.bevelSegments,
+            });
+        const textClientsGeometry =  new THREE.TextGeometry(
+            "Clients",
+            {
+                font: font,
+                size: fontParams.size,
+                height: fontParams.depth,
+                curveSegments: fontParams.curveSegments,
+                bevelEnabled: true,
+                bevelThickness: fontParams.bevelThickness,
+                bevelSize: fontParams.bevelSize,
+                bevelOffset: 0,
+                bevelSegments: fontParams.bevelSegments,
+            });
+        const textGovernanceGeometry =  new THREE.TextGeometry(
+            "Governance",
+            {
+                font: font,
+                size: fontParams.size,
+                height: fontParams.depth,
+                curveSegments: fontParams.curveSegments,
+                bevelEnabled: true,
+                bevelThickness: fontParams.bevelThickness,
+                bevelSize: fontParams.bevelSize,
+                bevelOffset: 0,
+                bevelSegments: fontParams.bevelSegments,
+            });
+        const textSystemsGeometry =  new THREE.TextGeometry(
+            "Systems",
+            {
+                font: font,
+                size: fontParams.size,
+                height: fontParams.depth,
+                curveSegments: fontParams.curveSegments,
+                bevelEnabled: true,
+                bevelThickness: fontParams.bevelThickness,
+                bevelSize: fontParams.bevelSize,
+                bevelOffset: 0,
+                bevelSegments: fontParams.bevelSegments,
+            });
+        const textFinanceGeometry =  new THREE.TextGeometry(
+            "Finance",
+            {
+                font: font,
+                size: fontParams.size,
+                height: fontParams.depth,
+                curveSegments: fontParams.curveSegments,
+                bevelEnabled: true,
+                bevelThickness: fontParams.bevelThickness,
+                bevelSize: fontParams.bevelSize,
+                bevelOffset: 0,
+                bevelSegments: fontParams.bevelSegments,
+            });
+        const textComplianceGeometry =  new THREE.TextGeometry(
+            "Compliance",
+            {
+                font: font,
+                size: fontParams.size,
+                height: fontParams.depth,
+                curveSegments: fontParams.curveSegments,
+                bevelEnabled: true,
+                bevelThickness: fontParams.bevelThickness,
+                bevelSize: fontParams.bevelSize,
+                bevelOffset: 0,
+                bevelSegments: fontParams.bevelSegments,
+            });
             textWorkforceGeometry.center();
             textClientsGeometry.center();
             textGovernanceGeometry.center();
@@ -405,10 +463,8 @@
 
             const TextRight = PositionMoveRight * 0.4;
             const TextLeft = PositionMoveRight * -0.55;
-
             const TextUp = PositionMoveUp * 1.15;
             const TextDown = PositionMoveUp * 0.85;
-
             const OverallUp = -0.5;
 
             textMesh_01.position.set(TextLeft - 0.15, TextUp + OverallUp, TextForward);
@@ -419,6 +475,7 @@
             textMesh_06.position.set(TextRight + 0.35, -TextDown -0.1 + OverallUp, TextForward);
             TextMeshes = [textMesh_01, textMesh_02, textMesh_03, textMesh_04, textMesh_05, textMesh_06]
             scene.add(textMesh_01, textMesh_02, textMesh_03, textMesh_04, textMesh_05, textMesh_06);
+            loading.bFontsLoaded = true;
         }
 
         /**
@@ -429,7 +486,6 @@
         /**
         * Lights
         */
-    
         const hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 2 );
         hemiLight.color.setHSL( 0.6, 1, 0.6 );
         hemiLight.castShadow = false;
@@ -445,7 +501,7 @@
             shadowCamera: 7,
             cameraFar: 10,
         }
-    
+
         //Mid Cost 
         const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6)
         directionalLight.castShadow = true
@@ -479,7 +535,6 @@
         /**
         * Camera
         */
-    
         const cameraGroup = new THREE.Group();
         scene.add(cameraGroup)
     
@@ -493,7 +548,6 @@
         camera.fov = 32.5
     
         scene.add(camera)
-    
         cameraGroup.add(camera)
     
         const guiCameraFolder = gui.addFolder("Camera");
@@ -577,6 +631,14 @@
                 }
             }
         )
+
+        const postParams = {
+            kernelRadius: 8,
+            kernelSize: 32,
+            minDistance: 0.005,
+            maxDistance: 0.1,
+            AOEnabled: true,
+        }
     
         /**
         * Post Processing
@@ -587,10 +649,11 @@
     
         const ssaoPass = new THREE.SSAOPass(scene, camera, sizes.width, sizes.height);
         // Optimization
-        ssaoPass.kernelRadius = 16; // Reduce from the default 32
-        ssaoPass.minDistance = 0.005; // Lower distance
-        ssaoPass.maxDistance = 0.1; // Lower distance
-        ssaoPass.enabled = false; // Disable initially for better performance
+        ssaoPass.kernelRadius = postParams.kernelRadius; // Reduce from the default 32
+        ssaoPass.minDistance = postParams.minDistance; // Lower distance
+        ssaoPass.kernelSize = postParams.kernelSize;
+        ssaoPass.maxDistance = postParams.maxDistance; // Lower distance
+        ssaoPass.enabled = postParams.AOEnabled; // Disable initially for better performance
         composer.addPass(ssaoPass);
     
         gui.add( ssaoPass, 'output', {
@@ -650,14 +713,11 @@
         bloomFolder.add(bloomParams, 'strength', 0.0, 3.0).onChange(value => bloomPass.strength = value);
         bloomFolder.add(bloomParams, 'radius', 0.0, 1.0).onChange(value => bloomPass.radius = value);
     
-    
         const finalComposer = new THREE.EffectComposer( renderer );
         finalComposer.addPass( renderPass );
         finalComposer.addPass( ssaoPass );
         finalComposer.addPass( mixPass );
         finalComposer.addPass( outputPass );
-    
-    
     
         function render() {
             scene.traverse( darkenNonBloomed );
@@ -803,26 +863,90 @@
 
         const framesObject = {
             maxTickRate: 61,
+            midTickRate: 45,
+            minTickRate: 30,
+
         }
         
         gui.add( framesObject, 'maxTickRate' ).min( 1 ).max( 61 ).step(10);
     
-        let OptimizationLevel = 0;
         function optimize(frameTime){
             if(isNaN(frameTime)){return;}
-
-            if(frameTime < 1000 / framesObject.maxTickRate) {
-                OptimizationLevel = 1;
-                ssaoPass.enabled = false;
+            // console.log(frameTime, 1000 / framesObject.minTickRate)
+            switch(Optimization.level)
+            {
+                case 0: {
+                    if(Optimization.bValuesSet === false)
+                    {
+                        console.log("Level 0")
+                        ssaoPass.enabled = true;
+                        ssaoPass.kernelRadius = postParams.kernelRadius;
+                        ssaoPass.kernelSize = postParams.kernelSize;
+                        ssaoPass.minDistance = postParams.minDistance;
+                        ssaoPass.maxDistance = postParams.maxDistance;
+                        LightParams.Mapsize = 512;
+                        LightParams.cameraFar = 10;
+                        LightParams.shadowCamera = 7;
+                        Optimization.bValuesSet = true;
+                    }
+                    // if(frameTime < 1000 / framesObject.maxTickRate) {
+                    //     console.log("SET Level 1")
+                    //     Optimization.level = 1;
+                    //     Optimization.bValuesSet = false;
+                    // }
+                }
+                break;
+                case 1: {
+                    if(Optimization.bValuesSet === false)
+                    {
+                        console.log("Level 1")
+                        ssaoPass.enabled = true;
+                        ssaoPass.kernelRadius = postParams.kernelRadius / 2;
+                        ssaoPass.kernelSize = postParams.kernelSize / 2
+                        ssaoPass.minDistance = postParams.minDistance / 2;
+                        ssaoPass.maxDistance = postParams.maxDistance / 2;
+                        LightParams.Mapsize = 256;
+                        LightParams.cameraFar = 7;
+                        LightParams.shadowCamera = 5;
+                        Optimization.bValuesSet = true;
+                    }
+                    // if(frameTime < 1000 / framesObject.midTickRate) {
+                    //     console.log("SET Level 2")
+                    //     Optimization.level = 2;
+                    //     Optimization.bValuesSet = false;
+                    // }
+                }
+                break;
+                case 2: {
+                    if(Optimization.bValuesSet === false)
+                    {
+                        console.log("Level 2")
+                        ssaoPass.enabled = false;
+                        LightParams.Mapsize = 256;
+                        LightParams.cameraFar = 7;
+                        LightParams.shadowCamera = 5;
+                        Optimization.bValuesSet = true;
+                    }
+                    // if(frameTime < 1000 / framesObject.minTickRate) {
+                    //     console.log("SET Level 3")
+                    //     Optimization.level = 3;
+                    //     Optimization.bValuesSet = false;
+                    // }
+                }
+                break;
+                case 3: {
+                    if(Optimization.bValuesSet === false)
+                    {
+                        console.log("Level 3")
+                        ssaoPass.enabled = false;
+                        LightParams.Mapsize = 256;
+                        LightParams.cameraFar = 7;
+                        LightParams.shadowCamera = 5;
+                        Optimization.bValuesSet = true;
+                    }
+                }
+                break;
             }
-            //const average = FrameTimes.reduce((acc, c) => acc + c, 0) / FrameTimes.length;
-            //console.log(average)
-            
-            // if(frameRate >= 50)
-            // {
-            //     framesObject.maxTickRate = Math.round((frameCount / frameRate) * 5000)
-            //     console.log(framesObject.maxTickRate)
-            // } -->
         }
         function HightlightAllPieces(){
             for(const PuzzlePiece of PuzzlePieces)
@@ -833,33 +957,28 @@
         function init(){
             HightlightAllPieces();
         }
-        //<!-- TODO add this to beginning and adjust font mesh based on result, & Others -->
-        //<!-- TODO Also wait till Loading of Meshes complete, and loading of Fonts is complete, then start ticking? -->
-        console.log(window.navigator.hardwareConcurrency)
-        if (window.navigator.hardwareConcurrency < 4) {
-            //renderer.shadowMap.enabled = false; // Disable shadows
-           // ssaoPass.enabled = false;
-            //bloomPass.enabled = false;
-        }
         
-    
+        let DroppedFrames = 0;
     
         function tick(currentTime) {
+            // Don't tick until models are loaded
+            if(loading.Complete() == false){return;}
             const now = performance.now();
             stats.update()
             const deltaTime = now - previousTime;
             const fps = 1000 / deltaTime; // Frames per second
             lastFrameTime = now;
-            console.log(fps)
             optimize(deltaTime);
-    
             if (deltaTime < 1000 / framesObject.maxTickRate) {
+                DroppedFrames++;
+                if(DroppedFrames > 1)
+                {
+                    console.log(DroppedFrames)
+                }
                 window.requestAnimationFrame(tick);
-                console.log("Dropped")
-                ssaoPass.enabled = false;
-                //bloomPass.enabled = false;            
                 return;
             }
+            DroppedFrames = 0;
             previousTime = currentTime;
             // Handle raycasting for selection
             if (bIsMouseInside && objectsToTest) {
