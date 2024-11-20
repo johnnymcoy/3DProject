@@ -94,6 +94,26 @@
             bValuesSet: false,
             SetLevel: (newLevel) => { this.level = newLevel;updateAllMaterials(); this.bValuesSet = false;}
         }
+        LoadOptimizationLevel();
+        // Function to load optimization level from localStorage
+        function LoadOptimizationLevel() {
+            const savedLevel = localStorage.getItem('optimizationLevel');
+            if (savedLevel !== null) {
+                Optimization.level = parseInt(savedLevel, 10);
+                console.log(`Loaded optimization level: ${Optimization.level}`);
+            } else {
+                console.log('No saved optimization level found, using default.');
+            }
+        }
+        // Function to save optimization level to localStorage
+        function SaveOptimizationLevel(level) {
+            Optimization.level = level;
+            localStorage.setItem('optimizationLevel', level);
+            console.log(`Saved optimization level: ${level}`);
+        }
+
+
+
         // 0 - none, 
         // 1 - reduced lighting, 
         // 2 - no SSAO, 
@@ -654,9 +674,7 @@
         /**
         * Post Processing
         */
-        const composer = new THREE.EffectComposer( renderer );
         const renderPass = new THREE.RenderPass( scene, camera );
-        composer.addPass( renderPass );
     
         const ssaoPass = new THREE.SSAOPass(scene, camera, sizes.width, sizes.height);
         // Optimization
@@ -665,7 +683,6 @@
         ssaoPass.kernelSize = postParams.kernelSize;
         ssaoPass.maxDistance = postParams.maxDistance; // Lower distance
         ssaoPass.enabled = postParams.AOEnabled; // Disable initially for better performance
-        composer.addPass(ssaoPass);
     
         gui.add( ssaoPass, 'output', {
             'Default': THREE.SSAOPass.OUTPUT.Default,
@@ -695,16 +712,13 @@
         };
     
         const bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), bloomParams.strength, bloomParams.radius, bloomParams.threshold );
-        composer.addPass(bloomPass);
     
         const outputPass = new THREE.ShaderPass(THREE.CopyShader);
-        composer.addPass(outputPass);
     
         const bloomComposer = new THREE.EffectComposer( renderer );
         bloomComposer.renderToScreen = true;
         bloomComposer.addPass( renderPass );
         bloomComposer.addPass( bloomPass );
-        
         const mixPass = new THREE.ShaderPass(
             new THREE.ShaderMaterial( {
                 uniforms: {
@@ -913,6 +927,7 @@
                         LightParams.shadowCamera = 7;
                         Optimization.bValuesSet = true;
                         HitsUnderPerforming = 0;
+                        SaveOptimizationLevel(0);
                         updateAllMaterials();
                     }
                     if(deltaTime > framesObject.level0Goal) {
@@ -945,6 +960,7 @@
                         LightParams.shadowCamera = 5;
                         Optimization.bValuesSet = true;
                         updateAllMaterials();
+                        SaveOptimizationLevel(1);
                         HitsUnderPerforming = 0;
                     }
                     if(deltaTime > framesObject.level1Goal) {
@@ -970,6 +986,7 @@
                         LightParams.shadowCamera = 5;
                         Optimization.bValuesSet = true;
                         updateAllMaterials();
+                        SaveOptimizationLevel(2);
                         HitsUnderPerforming = 0;
                     }
                     if(deltaTime > framesObject.level1Goal) {
@@ -994,6 +1011,7 @@
                         LightParams.cameraFar = 7;
                         LightParams.shadowCamera = 5;
                         Optimization.bValuesSet = true;
+                        SaveOptimizationLevel(3);
                         updateAllMaterials();
                     }
                 }
