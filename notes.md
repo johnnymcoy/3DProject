@@ -26,6 +26,13 @@ OptimizationLevel
 // 2 - no SSAO, 
 // 3 - ?
 
+
+problem
+slow pc is not checking as freqently as other,
+
+should optimize a lot faster
+
+
 OptimizationsLevels are at a good spot where Macbook can run 
 level 2 smoothly at 60, 
 but level 3 with no fans running 

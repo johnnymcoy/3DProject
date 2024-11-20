@@ -877,10 +877,10 @@
 
         const framesObject = {
             maxTickRate: 61,
-            level0Goal: 50,
-            level1Goal: 45,
-            level2Goal: 30,
-            level3Goal: 25,
+            level0Goal: 20,
+            level1Goal: 30,
+            level2Goal: 60,
+            level3Goal: 250,
         }
         
         gui.add( framesObject, 'maxTickRate' ).min( 1 ).max( 61 ).step(10);
@@ -888,13 +888,15 @@
         // Check each time we are hitting lower frames than wanted 
         let HitsUnderPerforming = 0;
         // if we get this many frames lower than expected, go to the next level
-        let HitsNeededToOptimize = 100;
+        let HitsNeededToOptimize = 30;
 
         // Resets the checker every x seconds
         let intervalInSeconds = 1;
 
-        function optimize(fps){
-            if(isNaN(fps)){return;}
+        function optimize(deltaTime){
+            if(isNaN(deltaTime)){return;}
+            // if delta time is over X then we optimize, 
+            // ideal is 20ms
             switch(Optimization.level)
             {
                 case 0: {
@@ -913,10 +915,10 @@
                         HitsUnderPerforming = 0;
                         updateAllMaterials();
                     }
-                    if(fps < framesObject.level0Goal) {
+                    if(deltaTime > framesObject.level0Goal) {
                         HitsUnderPerforming++;
-                    }        
-                    if(fps < framesObject.level2Goal) {
+                    }
+                    if(deltaTime > framesObject.level2Goal) {
                         HitsUnderPerforming++;
                     }
                     if(HitsUnderPerforming >= HitsNeededToOptimize)
@@ -945,9 +947,9 @@
                         updateAllMaterials();
                         HitsUnderPerforming = 0;
                     }
-                    if(fps < framesObject.level1Goal) {
+                    if(deltaTime > framesObject.level1Goal) {
                         HitsUnderPerforming++;
-                    }        
+                    }
                     if(HitsUnderPerforming >= HitsNeededToOptimize)
                     {
                         HitsUnderPerforming = 0;
@@ -970,7 +972,7 @@
                         updateAllMaterials();
                         HitsUnderPerforming = 0;
                     }
-                    if(fps < framesObject.level2Goal) {
+                    if(deltaTime > framesObject.level1Goal) {
                         HitsUnderPerforming++;
                     }
                     if(HitsUnderPerforming >= HitsNeededToOptimize)
@@ -1039,7 +1041,7 @@
             const deltaTime = now - previousTime;
             fps = 1000 / deltaTime; // Frames per second
             lastFrameTime = now;
-            optimize(fps);
+            optimize(deltaTime);
             if(Frames % framesToCheck === 0)
             {
                 // Reset the performance hits every 
